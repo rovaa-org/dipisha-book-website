@@ -1,10 +1,10 @@
-import BookShowcase from "./components/BookShowcase";
+import StartPage from "./page/StartPage";
 
 export default function Home() {
   return (
       <>
 
-      <BookShowcase />
+      <StartPage />
      </>
     );
 }
