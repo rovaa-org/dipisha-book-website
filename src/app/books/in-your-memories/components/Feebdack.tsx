@@ -1,5 +1,6 @@
 import React from 'react';
-import { Github } from 'lucide-react';
+
+import { SiGithub } from 'react-icons/si';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -19,7 +20,7 @@ export default function Feedback() {
             className="flex items-center gap-2 whitespace-nowrap"
             onClick={() => window.open(githubIssueLink, '_blank')}
           >
-            <Github className="h-4 w-4" />
+            <SiGithub className="h-4 w-4" />
             Raise Issue
           </Button>
         </div>
