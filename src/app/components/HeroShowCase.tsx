@@ -1,11 +1,9 @@
-'use client'
-
 import React from 'react';
 
 const HeroShowcase = () => {
   return (
-    <div className="relative w-full h-screen">
-      {/* Video Background with overlay */}
+    <div className="relative w-full h-screen" id='home'>
+
       <div className="absolute inset-0">
         <video
           className="absolute top-0 left-0 min-w-full h-full object-cover"
