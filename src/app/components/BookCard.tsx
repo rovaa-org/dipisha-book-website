@@ -14,7 +14,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const router = useRouter();
 
   const handleBookClick = () => {
-    router.push(`/books/${book.id}`);
+    router.push(`/books/in-your-memories`);
   };
 
   return (

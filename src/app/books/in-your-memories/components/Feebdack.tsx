@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Feedback() {
   // Replace with your actual GitHub issues link
-  const githubIssueLink = "#";
+  const githubIssueLink = "https://github.com/rovaa-org/dipisha-book-website/issues";
 
   return (
     <Card className="max-w-6xl mx-auto my-4">
