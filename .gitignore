@@ -42,3 +42,5 @@ next-env.d.ts
 
 .idea
 .wrangler
+# Sentry Config File
+.env.sentry-build-plugin
