@@ -1,30 +1,28 @@
-"use client"
+'use client';
 
-import {  useEffect } from 'react';
 import BooksShowcase from "../app/components/BooksShowcase";
 import Footer from "../app/components/Footer";
 import HeroShowcase from "../app/components/HeroShowCase";
-
+import { NavBar } from "@/components/ui/tubelight-navbar";
+import { Home as lucideHome, User,} from 'lucide-react'
 
 export default function Home() {
-    useEffect(() => {
 
-      const timer = setTimeout(() => {
-        const booksSection = document.getElementById('books');
-        if (booksSection) {
-          booksSection.scrollIntoView({ 
-            behavior: 'smooth',
-          });
-        }
-      }, 5000);
-  
-  
-      return () => clearTimeout(timer);
-    }, []); 
+
+
+    const navItems = [
+      { name: 'Home', url: '#home', icon: lucideHome },
+      { name: 'Books', url: '#books', icon: User },
+    ]
     return (
       <>
+      <NavBar items={navItems} />
+        <div id="home">
         <HeroShowcase />
-        <BooksShowcase  />
+        </div>
+        <div id="books">
+        <BooksShowcase   />
+        </div>
         <Footer />
       </>
     );
