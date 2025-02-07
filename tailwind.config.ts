@@ -8,6 +8,13 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+
+	fontFamily: {
+		'geist-sans': 'var(--font-geist-sans)',
+		'geist-mono': 'var(--font-geist-mono)',
+		'crafty-girls': 'var(--font-crafty-girls)'
+	},
+
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',

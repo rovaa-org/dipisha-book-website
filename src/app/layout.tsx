@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Crafty_Girls } from "next/font/google";
 import "./globals.css";
 
 
@@ -12,6 +12,14 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const craftyGirls = Crafty_Girls({
+  variable: "--font-crafty-girls",
+  subsets: ["latin"],
+  weight: "400"
+});
+
+
 
 export const metadata: Metadata = {
   title: "Dipisha Books",
@@ -33,7 +41,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${craftyGirls.variable} antialiased`}
       >
         {children}
       </body>
