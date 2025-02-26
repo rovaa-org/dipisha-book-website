@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { PenTool } from 'lucide-react';
-import cover from '@/assets/In Your Memories.jpg';
-import { Book } from '../types/book';
-import BookCard from './BookCard';
+import { motion, AnimatePresence } from "framer-motion";
+import { PenTool } from "lucide-react";
+import cover from "@/assets/In Your Memories.jpg";
+import { Book } from "../types/book";
+import BookCard from "./BookCard";
 
 // Book Data
 const booksData: Book[] = [
@@ -16,8 +16,8 @@ const booksData: Book[] = [
     genre: ["Love", "Poetry", "Romance", "Fantasy Fiction"],
     releaseDate: "2025",
     coverImage: cover,
-    status: 'complete',
-    author: 'Dipisha Kalura',
+    status: "complete",
+    author: "Dipisha Kalura",
     pages: 35,
   },
 ];
@@ -30,10 +30,12 @@ const EmptyState: React.FC = () => (
     className="col-span-full min-h-[600px] flex flex-col items-center justify-center p-12 text-center  rounded-lg"
   >
     <PenTool className="w-16 h-16 text-pink-300 mb-4" />
-    <h3 className="text-xl font-serif font-bold text-gray-800 mb-2">Work in Progress</h3>
+    <h3 className="text-xl font-serif font-bold text-gray-800 mb-2">
+      Work in Progress
+    </h3>
     <p className="text-gray-600 max-w-md">
-      New stories are currently being crafted with love and dedication.
-      Check back soon for upcoming literary adventures!
+      New stories are currently being crafted with love and dedication. Check
+      back soon for upcoming literary adventures!
     </p>
   </motion.div>
 );
@@ -41,7 +43,10 @@ const EmptyState: React.FC = () => (
 // BooksShowcase Component
 const BooksShowcase: React.FC = () => {
   return (
-    <div className="min-h-screen w-full py-16 px-4 md:px-6 bg-[#FDF7F7]" id="books">
+    <div
+      className="min-h-screen w-full py-16 px-4 md:px-6 bg-[#FDF7F7]"
+      id="books"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-purple-600">

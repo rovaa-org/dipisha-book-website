@@ -5,7 +5,8 @@ import { SiGithub } from "react-icons/si";
 
 // Feedback Component
 export function Feedback() {
-  const githubIssueLink = "https://github.com/rovaa-org/dipisha-book-website/issues";
+  const githubIssueLink =
+    "https://github.com/rovaa-org/dipisha-book-website/issues";
   const emailAddress = "deepeshkalurs@gmail.com";
 
   return (
@@ -19,7 +20,7 @@ export function Feedback() {
             <Button
               variant="outline"
               className="flex items-center gap-2 whitespace-nowrap"
-              onClick={() => window.open(githubIssueLink, '_blank')}
+              onClick={() => window.open(githubIssueLink, "_blank")}
             >
               <SiGithub className="h-4 w-4" />
               Raise Issue

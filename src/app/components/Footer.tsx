@@ -1,37 +1,42 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
-import { SiNextdotjs, SiCloudflare, SiInstagram, SiLinkedin, SiYoutube } from 'react-icons/si';
-import logo from '@/app/logo.png';
+import React from "react";
+import { motion } from "framer-motion";
+import { Heart } from "lucide-react";
+import {
+  SiNextdotjs,
+  SiCloudflare,
+  SiInstagram,
+  SiLinkedin,
+  SiYoutube,
+} from "react-icons/si";
+import logo from "@/app/logo.png";
 
-import Image from 'next/image';
+import Image from "next/image";
 const socialLinks = [
   {
     icon: <SiInstagram size={24} />,
-    href: 'https://instagram.com',
-    label: 'Instagram',
-    hoverColor: 'hover:text-pink-300',
+    href: "https://instagram.com",
+    label: "Instagram",
+    hoverColor: "hover:text-pink-300",
   },
   {
     icon: <SiLinkedin size={24} />,
-    href: 'https://www.linkedin.com/in/dipisha-kalura91304/',
-    label: 'LinkedIn',
-    hoverColor: 'hover:text-blue-300',
+    href: "https://www.linkedin.com/in/dipisha-kalura91304/",
+    label: "LinkedIn",
+    hoverColor: "hover:text-blue-300",
   },
   {
     icon: <SiYoutube size={24} />,
-    href: 'https://www.youtube.com/@itsmelupa',
-    label: 'YouTube',
-    hoverColor: 'hover:text-red-300',
-  }
+    href: "https://www.youtube.com/@itsmelupa",
+    label: "YouTube",
+    hoverColor: "hover:text-red-300",
+  },
 ];
 
 const navLinks = [
-  { name: 'Home', href: '#home' },
-  { name: 'Books', href: '#books' },
-
+  { name: "Home", href: "#home" },
+  { name: "Books", href: "#books" },
 ];
 
 const Footer = () => {
@@ -48,30 +53,30 @@ const Footer = () => {
           {/* About Section */}
           <div className="space-y-4 col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-            <Image
-              src={logo}
-              alt="Logo"
-              width={35}
-              height={35}
-              className="rounded-full"
-            /> 
-  
+              <Image
+                src={logo}
+                alt="Logo"
+                width={35}
+                height={35}
+                className="rounded-full"
+              />
+
               <h3 className="text-xl font-serif font-semibold">
                 Dipisha Kalura
               </h3>
             </div>
             <p className="text-sm leading-relaxed">
-              Welcome to my creative corner! I&apos;m a passionate writer who believes in the power of words 
-              to touch hearts and inspire minds. Through poetry and stories, I explore the depths of 
-              human emotions and experiences, creating a bridge between imagination and reality.
+              Welcome to my creative corner! I&apos;m a passionate writer who
+              believes in the power of words to touch hearts and inspire minds.
+              Through poetry and stories, I explore the depths of human emotions
+              and experiences, creating a bridge between imagination and
+              reality.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-serif font-semibold">
-              Explore
-            </h3>
+            <h3 className="text-lg font-serif font-semibold">Explore</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.name}>
@@ -92,8 +97,8 @@ const Footer = () => {
               Let&apos;s Connect
             </h3>
             <p className="text-sm mb-4">
-              Join me on social media for daily inspiration, poetry updates, and behind-the-scenes glimpses 
-              of my writing journey.
+              Join me on social media for daily inspiration, poetry updates, and
+              behind-the-scenes glimpses of my writing journey.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -127,13 +132,20 @@ const Footer = () => {
                 <span className="text-sm">Cloudflare</span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-center gap-2 text-sm">
-              Created by <a href='https://www.linkedin.com/in/deepeshkalura/'> Deepesh Kalura </a> <Heart size={16} className="text-pink-300" /> Powered by <a href='http://github.com/rovaa-org'> Rovaa </a> 
+              Created by{" "}
+              <a href="https://www.linkedin.com/in/deepeshkalura/">
+                {" "}
+                Deepesh Kalura{" "}
+              </a>{" "}
+              <Heart size={16} className="text-pink-300" /> Powered by{" "}
+              <a href="http://github.com/rovaa-org"> Rovaa </a>
             </div>
-            
+
             <div className="text-sm text-center md:text-right">
-              © {new Date().getFullYear()} All rights reserved to Dipisha Kalura
+              © {new Date().getFullYear()} All rights reserved to Dipisha
+              Kalura
             </div>
           </div>
         </div>
