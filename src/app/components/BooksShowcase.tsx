@@ -1,3 +1,5 @@
+'use client'
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { PenTool } from 'lucide-react';
 import cover from '@/assets/In Your Memories.jpg';

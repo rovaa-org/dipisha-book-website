@@ -1,15 +1,14 @@
-'use client';
-
+// Page.tsx - Server Component
 import React from 'react';
-
-import Head from 'next/head'; 
 import { Book } from '@/app/types/book';
 import cover from '@/assets/In Your Memories.jpg';
 import { PDFViewer } from './components/PDFViewer';
+import { BookDetailsSheet } from './components/BookDetailsSheet';
+import { HelpSheet } from './components/HelpSheet';
+import Link from 'next/link';
 
-const BookDetailsPage = () => {
 
-  // Book details with proper typing
+export default function BookDetailsPage() {
   const bookDetails: Book = {
     id: "1",
     title: "In Your Memories",
@@ -25,24 +24,25 @@ const BookDetailsPage = () => {
 
   return (
     <>
-      {/* SEO Head Tags */}
-      <Head>
-        <title>{bookDetails.title} by {bookDetails.author} - Book Details</title>
-        <meta name="description" content={`${bookDetails.description} Discover more about the book "${bookDetails.title}" by ${bookDetails.author}, including release details, genre, and more.`} />
-        <meta name="keywords" content={`${bookDetails.genre.join(", ")}, ${bookDetails.author}, ${bookDetails.title}, poetry, romance books`} />
-        <meta name="author" content={bookDetails.author} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content={`${bookDetails.title} by ${bookDetails.author}`} />
-        <meta property="og:description" content={bookDetails.description} />
-        <meta property="og:image" content="/assets/In Your Memories.jpg" />
-        <meta property="og:type" content="book" />
-      </Head>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm p-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link href="/" className="flex items-center text-pink-700 hover:text-pink-900 font-medium">
+            <span className="flex items-center gap-2">← Back to Library</span>
+          </Link>
           
-      <div className="min-h-screen">
-          <PDFViewer pdfUrl={"/in-your-memories.pdf"}  bookDetails={bookDetails}/>
+          <div className="flex space-x-2">
+            <BookDetailsSheet bookDetails={bookDetails} />
+            <HelpSheet />
+          </div>
         </div>
+      </header>
+      
+      <main className="min-h-screen pt-16 pb-24">
+        <PDFViewer 
+          pdfUrl="/in-your-memories.pdf" 
+        />
+      </main>
+      
     </>
   );
-};
-
-export default BookDetailsPage;
+}
