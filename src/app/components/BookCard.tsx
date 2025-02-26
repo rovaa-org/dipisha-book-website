@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Image from 'next/image';
+import Image from "next/image";
 import { Book } from "../types/book";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -31,9 +31,11 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         {/* Improved Date Banner - Glossy ribbon style */}
         <div className="absolute top-4 right-0 z-10">
           <div className="relative">
-            <div className="bg-gradient-to-r from-pink-400 to-rose-400 text-white py-1 px-6 rounded-l-full shadow-lg
+            <div
+              className="bg-gradient-to-r from-pink-400 to-rose-400 text-white py-1 px-6 rounded-l-full shadow-lg
                           before:content-[''] before:absolute before:right-0 before:border-t-[12px] before:border-rose-600
-                          before:border-r-[12px] before:border-r-transparent before:bottom-[-12px]">
+                          before:border-r-[12px] before:border-r-transparent before:bottom-[-12px]"
+            >
               <p className="text-sm font-medium">{book.releaseDate}</p>
             </div>
           </div>

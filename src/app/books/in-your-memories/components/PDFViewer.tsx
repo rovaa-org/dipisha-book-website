@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,39 +9,35 @@ import {
   ZoomOut,
   Maximize2,
   Minimize2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Dynamically import react-pdf with no SSR
 const PDFDocument = dynamic(
-  () => import('react-pdf').then(mod => ({ default: mod.Document })),
-  { ssr: false }
+  () => import("react-pdf").then((mod) => ({ default: mod.Document })),
+  { ssr: false },
 );
 const PDFPage = dynamic(
-  () => import('react-pdf').then(mod => ({ default: mod.Page })),
-  { ssr: false }
+  () => import("react-pdf").then((mod) => ({ default: mod.Page })),
+  { ssr: false },
 );
 
 // Load the worker dynamically on the client side
 const loadPdfWorker = () => {
-  if (typeof window !== 'undefined') {
-    import('react-pdf').then(({ pdfjs }) => {
+  if (typeof window !== "undefined") {
+    import("react-pdf").then(({ pdfjs }) => {
       pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-        'pdfjs-dist/build/pdf.worker.min.mjs',
+        "pdfjs-dist/build/pdf.worker.min.mjs",
         import.meta.url,
       ).toString();
     });
   }
 };
 
-export function PDFViewer({
-  pdfUrl,
-}: {
-  pdfUrl: string,
-}) {
+export function PDFViewer({ pdfUrl }: { pdfUrl: string }) {
   const [numPages, setNumPages] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(1.10);
+  const [scale, setScale] = useState(1.1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [, setIsLoading] = useState(true);
   const documentRef = useRef<HTMLDivElement>(null);
@@ -54,10 +50,10 @@ export function PDFViewer({
   // Swipe and key navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        setPageNumber(prev => Math.min(prev + 1, numPages || prev));
-      } else if (e.key === 'ArrowLeft') {
-        setPageNumber(prev => Math.max(prev - 1, 1));
+      if (e.key === "ArrowRight") {
+        setPageNumber((prev) => Math.min(prev + 1, numPages || prev));
+      } else if (e.key === "ArrowLeft") {
+        setPageNumber((prev) => Math.max(prev - 1, 1));
       }
     };
 
@@ -75,36 +71,36 @@ export function PDFViewer({
       if (Math.abs(diffX) > 50) {
         if (diffX > 0) {
           // Swiped left, go to next page
-          setPageNumber(prev => Math.min(prev + 1, numPages || prev));
+          setPageNumber((prev) => Math.min(prev + 1, numPages || prev));
         } else {
           // Swiped right, go to previous page
-          setPageNumber(prev => Math.max(prev - 1, 1));
+          setPageNumber((prev) => Math.max(prev - 1, 1));
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [numPages]);
 
   // Responsive scale calculation
   const calculateInitialScale = useCallback(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const screenWidth = window.innerWidth;
       const screenHeight = window.innerHeight;
-      
+
       const baseScale = Math.min(
         (screenWidth * 0.95) / 800,
-        (screenHeight * 0.95) / 1000
+        (screenHeight * 0.95) / 1000,
       );
-      
+
       return Math.min(Math.max(baseScale, 1), 1.5);
     }
     return 1;
@@ -119,8 +115,8 @@ export function PDFViewer({
       setScale(calculateInitialScale());
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [calculateInitialScale]);
 
   const toggleFullscreen = () => {
@@ -134,17 +130,20 @@ export function PDFViewer({
   };
 
   const zoomIn = () => {
-    setScale(prev => Math.min(prev * 1.2, 3));
+    setScale((prev) => Math.min(prev * 1.2, 3));
   };
 
   const zoomOut = () => {
-    setScale(prev => Math.max(prev / 1.2, 1));
+    setScale((prev) => Math.max(prev / 1.2, 1));
   };
 
   return (
-    <div ref={documentRef} className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+    <div
+      ref={documentRef}
+      className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100"
+    >
       <div className="relative w-full max-w-4xl mx-auto">
-        {typeof window !== 'undefined' && (
+        {typeof window !== "undefined" && (
           <PDFDocument
             file={pdfUrl}
             onLoadSuccess={({ numPages }) => {
@@ -160,7 +159,7 @@ export function PDFViewer({
               </div>
             }
           >
-            <div 
+            <div
               className="flex justify-center items-center overflow-auto"
               style={{ transform: `scale(${scale})` }}
             >
@@ -178,8 +177,8 @@ export function PDFViewer({
         {/* Floating Control Bar */}
         <div className="fixed bottom-20 sm:bottom-16 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-full p-2 flex items-center space-x-2">
           {/* Page Navigation */}
-          <Button 
-            onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
+          <Button
+            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
             disabled={pageNumber <= 1}
             className="text-pink-700 hover:bg-pink-50"
             size="sm"
@@ -187,10 +186,14 @@ export function PDFViewer({
             <ChevronLeft size={18} />
           </Button>
 
-          <span className="text-sm px-2">{pageNumber} / {numPages || '?'}</span>
+          <span className="text-sm px-2">
+            {pageNumber} / {numPages || "?"}
+          </span>
 
-          <Button 
-            onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages || prev))}
+          <Button
+            onClick={() =>
+              setPageNumber((prev) => Math.min(prev + 1, numPages || prev))
+            }
             disabled={pageNumber >= (numPages || 0)}
             className="text-pink-700 hover:bg-pink-50"
             size="sm"
@@ -199,7 +202,7 @@ export function PDFViewer({
           </Button>
 
           {/* Zoom Controls */}
-          <Button 
+          <Button
             onClick={zoomOut}
             disabled={scale <= 1}
             className="text-pink-700 hover:bg-pink-50"
@@ -208,7 +211,7 @@ export function PDFViewer({
             <ZoomOut size={18} />
           </Button>
 
-          <Button 
+          <Button
             onClick={zoomIn}
             disabled={scale >= 3}
             className="text-pink-700 hover:bg-pink-50"
@@ -218,7 +221,7 @@ export function PDFViewer({
           </Button>
 
           {/* Fullscreen Toggle */}
-          <Button 
+          <Button
             onClick={toggleFullscreen}
             className="text-pink-700 hover:bg-pink-50"
             size="sm"

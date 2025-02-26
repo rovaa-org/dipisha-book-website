@@ -8,7 +8,7 @@ export interface Book {
   genre: string[];
   releaseDate: string;
   coverImage: StaticImageData;
-  status: 'complete' | 'ongoing';
+  status: "complete" | "ongoing";
   // excerpt: string;
   author: string;
   pages: number;

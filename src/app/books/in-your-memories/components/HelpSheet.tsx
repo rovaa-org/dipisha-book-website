@@ -1,8 +1,14 @@
 // HelpSheet.tsx - Server Component
-import React from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { HelpCircle } from 'lucide-react';
+import React from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { HelpCircle } from "lucide-react";
 
 export function HelpSheet() {
   return (
@@ -16,7 +22,7 @@ export function HelpSheet() {
         <SheetHeader>
           <SheetTitle>Navigation Help</SheetTitle>
         </SheetHeader>
-        
+
         <div className="space-y-4 mt-4">
           <section>
             <h3 className="font-semibold mb-2">Keyboard Navigation</h3>
@@ -25,7 +31,7 @@ export function HelpSheet() {
               <li>Right Arrow: Next Page</li>
             </ul>
           </section>
-          
+
           <section>
             <h3 className="font-semibold mb-2">Touch Navigation</h3>
             <ul className="space-y-1 text-sm">
