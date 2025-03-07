@@ -84,6 +84,9 @@ We welcome contributions to improve and enhance the website. Here’s how you ca
 
 Your contributions are greatly appreciated!
 
+## Deployment guideline
+1. `npm run build`: build out man
+2. then `wrangler pages deploy out/`
 ## Contact
 
 For inquiries, feedback, or collaboration opportunities, please feel free to reach out:
