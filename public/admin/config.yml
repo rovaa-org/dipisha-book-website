@@ -1,0 +1,25 @@
+backend:
+  name: github
+  repo: rovaa-org/dipisha-book-website # Your GitHub repo
+  branch: main # Branch to store content
+  auth_type: oauth
+  app_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID # GitHub OAuth App Client ID
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "books"
+    label: "Books"
+    folder: "src/content/books"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Release Date", name: "releaseDate", widget: "datetime" }
+      - { label: "Description", name: "description", widget: "markdown" }
+      - { label: "Genre", name: "genre", widget: "list", field: { label: "Genre", name: "genre_item", widget: "string" } }
+      - { label: "Status", name: "status", widget: "select", options: ["complete", "ongoing"] }
+      - { label: "Pages", name: "pages", widget: "number" }
+      - { label: "Cover Image", name: "coverImage", widget: "image" }

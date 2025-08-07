@@ -1,26 +1,7 @@
-"use client";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { PenTool } from "lucide-react";
-import cover from "@/assets/In Your Memories.jpg";
-import { Book } from "../types/book";
 import BookCard from "./BookCard";
-
-// Book Data
-const booksData: Book[] = [
-  {
-    id: "1",
-    title: "In Your Memories",
-    description: `"In Your Memories" is a collection of poems expressing the journey of always being the lover but never loved.
-     Every single sentiment, from love to realization to letting go, is encapsulated and conveyed through words, honoring the unspoken feelings of many.`,
-    genre: ["Love", "Poetry", "Romance", "Fantasy Fiction"],
-    releaseDate: "2025",
-    coverImage: cover,
-    status: "complete",
-    author: "Dipisha Kalura",
-    pages: 35,
-  },
-];
+import { getAllBooks } from "@/lib/books";
 
 // EmptyState Component
 const EmptyState: React.FC = () => (
@@ -41,7 +22,9 @@ const EmptyState: React.FC = () => (
 );
 
 // BooksShowcase Component
-const BooksShowcase: React.FC = () => {
+const BooksShowcase: React.FC = async () => {
+  const booksData = getAllBooks();
+
   return (
     <div
       className="min-h-screen w-full py-16 px-4 md:px-6 bg-[#FDF7F7]"
@@ -63,7 +46,7 @@ const BooksShowcase: React.FC = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {booksData.length > 0 ? (
-              booksData.map((book) => <BookCard key={book.id} book={book} />)
+              booksData.map((book) => <BookCard key={book.slug} book={book} />)
             ) : (
               <EmptyState />
             )}

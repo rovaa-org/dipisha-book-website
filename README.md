@@ -41,7 +41,26 @@ npm install
 yarn install
 ```
 
-### 3. Run the Development Server
+### 3. Decap CMS Setup (Optional)
+
+This project integrates with Decap CMS for content management. To use the CMS locally or in production with GitHub authentication, you need to set up a GitHub OAuth Application.
+
+1.  **Create a GitHub OAuth App**: Go to your GitHub settings (or organization settings) -> Developer settings -> OAuth Apps -> New OAuth App.
+    *   **Homepage URL**: `http://localhost:3000` (for local development) or your deployed website URL.
+    *   **Authorization callback URL**: `http://localhost:3000/admin` (for local development) or `YOUR_DEPLOYED_URL/admin`.
+2.  **Environment Variables**: Once created, you will get a `Client ID` and `Client Secret`. These need to be set as environment variables in your deployment environment (e.g., Vercel, Netlify, Cloudflare Pages).
+    *   `NEXT_PUBLIC_GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID`
+    *   `GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET` (This is a sensitive variable and should NOT be exposed to the client-side).
+
+    For local development, you can create a `.env.local` file in the project root:
+    ```
+    NEXT_PUBLIC_GITHUB_CLIENT_ID=your_local_client_id
+    GITHUB_CLIENT_SECRET=your_local_client_secret
+    ```
+
+3.  **Accessing the CMS**: Once configured, you can access the CMS at `/admin` (e.g., `http://localhost:3000/admin`).
+
+### 4. Run the Development Server
 
 Start the development server to view the website locally:
 
