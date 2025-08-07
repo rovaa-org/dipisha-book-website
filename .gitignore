@@ -5,3 +5,8 @@ node_modules
 .wrangler
 .env
 .dev.vars
+# Sentry Config File
+.env.sentry-build-plugin
+
+.sca
+thinking.md
