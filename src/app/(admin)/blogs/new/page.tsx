@@ -1,8 +1,8 @@
 'use client'
-import Editor from "@/app/(admin)/components/Editor";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Editor from "../../components/Editor";
+import { Button } from "../../../../components/ui/button";
+import { Input } from "../../../../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
 import { useState } from "react";
 
 export default function NewBlogPage() {
