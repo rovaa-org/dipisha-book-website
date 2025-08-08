@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
@@ -11,6 +13,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <p>Manage your blog posts here.</p>
+            <Link href="/blogs/new">
+              <Button>New Post</Button>
+            </Link>
           </CardContent>
         </Card>
         <Card>
