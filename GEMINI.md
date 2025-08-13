@@ -52,7 +52,7 @@ Follow this sequence precisely for every task.
 
 **Step 4: Build and Verify**
 1.  Once you believe the work is complete, request that the user start the local server for verification. **This is a critical hand-off point.**
-    *   **Execute Alert:** `notify-send 'STATUS: WAITING' 'Please start the dev server for verification.' && paplay ~/Music/error-2.wav`
+    *   **Execute Alert:** `notify-send 'STATUS: WAITING' 'Please start the dev server for verification.' && paplay ~/Music/error-2.mp4`
     *   **Output to Console:** `STATUS: WAITING. The code is ready for verification. Please start the local development server.`
 2.  **WAIT** for the user to respond with a message containing "SERVER READY". Do not proceed without it.
 3.  Once you receive the "SERVER READY" signal, use `curl` to test the `Verification-Target` from the `task.md` file.
@@ -72,7 +72,7 @@ Follow this sequence precisely for every task.
     *   **Filename:** `[Task-ID].md`
     *   **Content:** Include a brief description of the feature, how to use it, any new API endpoints created, and important components.
 3.  **Signal Completion:**
-    *   **Execute Alert:** `notify-send 'STATUS: COMPLETE' 'Task [Task-ID] is ready for review.' && paplay ~/Music/sucess.wav`
+    *   **Execute Alert:** `notify-send 'STATUS: COMPLETE' 'Task [Task-ID] is ready for review.' && paplay ~/Music/sucess.mp4`
     *   **Output to Console:** `STATUS: COMPLETE. Branch '[branch-name]' has been pushed. The KT document is available at '.sca/kt/[Task-ID].md'.`
 
 ---
