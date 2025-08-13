@@ -1,14 +1,21 @@
 'use client'
-import Editor from "../../components/Editor";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+
+// Use next/dynamic to prevent the Editor from being rendered on the server
+const Editor = dynamic(() => import("../../components/Editor"), {
+  ssr: false,
+  loading: () => <p>Loading editor...</p>, // Optional: show a loading state
+});
+
 
 export default function NewBlogPage() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("draft");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("<p>Start writing your amazing blog post here... ✍️</p>");
 
   const handleSave = async () => {
     const response = await fetch("/api/content/blog", {
@@ -40,7 +47,7 @@ export default function NewBlogPage() {
             <SelectItem value="published">Published</SelectItem>
           </SelectContent>
         </Select>
-        <Editor />
+        <Editor content={content} onChange={setContent} />
         <Button onClick={handleSave}>Save Post</Button>
       </div>
     </div>

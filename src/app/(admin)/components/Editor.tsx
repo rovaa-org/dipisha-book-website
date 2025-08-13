@@ -1,29 +1,34 @@
+'use client'
+
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { BubbleMenu } from '@tiptap/react'
-import BubbleMenuExtension from '@tiptap/extension-bubble-menu'
-import { Toggle } from '../../../components/ui/toggle'
 
-const Tiptap = () => {
+interface TiptapProps {
+    content: string;
+    onChange: (richText: string) => void;
+}
+
+const Tiptap = ({ content, onChange }: TiptapProps) => {
   const editor = useEditor({
+    // THIS IS THE CRITICAL FIX:
+    immediatelyRender: false,
+    //
     extensions: [
       StarterKit,
-      BubbleMenuExtension.configure(),
     ],
-    content: '<p>Hello World! 🌎️</p>',
+    content: content,
+    editorProps: {
+        attributes: {
+            class: "rounded-md border min-h-[150px] border-input p-4"
+        }
+    },
+    onUpdate({ editor }) {
+        onChange(editor.getHTML());
+    },
   })
 
   return (
-    <div>
-      {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-        <Toggle onPressedChange={() => editor.chain().focus().toggleBold().run()} pressed={editor.isActive('bold')}>Bold</Toggle>
-        <Toggle onPressedChange={() => editor.chain().focus().toggleItalic().run()} pressed={editor.isActive('italic')}>Italic</Toggle>
-        <Toggle onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} pressed={editor.isActive('heading', { level: 1 })}>H1</Toggle>
-        <Toggle onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} pressed={editor.isActive('heading', { level: 2 })}>H2</Toggle>
-        <Toggle onPressedChange={() => editor.chain().focus().toggleBulletList().run()} pressed={editor.isActive('bulletList')}>Bullet List</Toggle>
-      </BubbleMenu>}
-      <EditorContent editor={editor} />
-    </div>
+    <EditorContent editor={editor} />
   )
 }
 
