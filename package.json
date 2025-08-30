@@ -6,6 +6,7 @@
 		"dev:all": "turbo dev",
 		"dev:admin": "turbo dev --filter=@dipisha/admin",
 		"dev:website": "turbo dev --filter=@dipisha/website",
+		"dev:api": "turbo dev --filter=@dipisha/api",
 		"lint": "turbo lint",
 		"format": "prettier --write '**/*.{ts,tsx,md}'"
 	},
