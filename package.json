@@ -4,14 +4,15 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev:all": "turbo dev",
-		"dev:admin": "turbo run ",
+		"dev:admin": "turbo dev --filter=@dipisha/admin",
+		"dev:website": "turbo dev --filter=@dipisha/website",
 		"lint": "turbo lint",
 		"format": "prettier --write '**/*.{ts,tsx,md}'"
 	},
 	"devDependencies": {
-		"prettier": "^3.2.5",
 		"@turbo/gen": "^1.10.0",
-		"turbo": "^1.10.0"
+		"prettier": "^3.2.5",
+		"turbo": "^2.5.6"
 	},
 	"packageManager": "pnpm@9.0.0"
 }
