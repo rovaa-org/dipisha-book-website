@@ -3,6 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
+		 "build:admin": "turbo build --filter=@dipisha/admin",
 		"dev:all": "turbo dev",
 		"dev:admin": "turbo dev --filter=@dipisha/admin",
 		"dev:website": "turbo dev --filter=@dipisha/website",

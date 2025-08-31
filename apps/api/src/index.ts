@@ -173,4 +173,29 @@ app.post('/api/uploads', async (c) => {
 	}
 });
 
+app.patch('/api/posts/:id/cover', async (c) => {
+	const db = c.var.db;
+	const id = c.req.param('id');
+	const { coverImageUrl } = await c.req.json<{ coverImageUrl: string }>();
+
+	if (!coverImageUrl) {
+		return c.json({ error: 'Missing coverImageUrl' }, 400);
+	}
+
+	try {
+		await db
+			.update(posts)
+			.set({ coverImageUrl: coverImageUrl, updatedAt: new Date() })
+			.where(eq(posts.id, id));
+
+		return c.json({ success: true, message: 'Cover image updated' });
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to update cover image' }, 500);
+	}
+});
+
+app.get("/", (c) => {
+ return c.json({"Healthy": "Mean Strong"});
+});
 export default app;

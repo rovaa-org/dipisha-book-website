@@ -6,33 +6,36 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  List, // Changed from ListOrdered
   ListOrdered,
   type LucideIcon,
   TextIcon,
   TextQuote,
 } from "lucide-react";
-import { EditorBubbleItem, useEditor } from "novel";
+import { EditorBubbleItem, useEditor} from "novel";
 
 import { Button } from "@/components/tailwind/ui/button";
-import { PopoverContent, PopoverTrigger } from "@/components/tailwind/ui/popover";
-import { Popover } from "@radix-ui/react-popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/tailwind/ui/popover";
+
 
 export type SelectorItem = {
   name: string;
   icon: LucideIcon;
-  command: (editor: ReturnType<typeof useEditor>["editor"]) => void;
-  isActive: (editor: ReturnType<typeof useEditor>["editor"]) => boolean;
+  command: (editor: any) => void;
+  isActive: (editor: any) => boolean;
+};
+
+// A default item to use when multiple nodes are selected
+const defaultItem: SelectorItem = {
+  name: "Text",
+  icon: TextIcon,
+  command: (editor) => editor.chain().focus().clearNodes().run(),
+  isActive: (editor) =>
+    editor.isActive("paragraph") && !editor.isActive("bulletList") && !editor.isActive("orderedList"),
 };
 
 const items: SelectorItem[] = [
-  {
-    name: "Text",
-    icon: TextIcon,
-    command: (editor) => editor.chain().focus().clearNodes().run(),
-    // I feel like there has to be a more efficient way to do this – feel free to PR if you know how!
-    isActive: (editor) =>
-      editor.isActive("paragraph") && !editor.isActive("bulletList") && !editor.isActive("orderedList"),
-  },
+  defaultItem, // Use the default item as the first in the list
   {
     name: "Heading 1",
     icon: Heading1,
@@ -59,7 +62,7 @@ const items: SelectorItem[] = [
   },
   {
     name: "Bullet List",
-    icon: ListOrdered,
+    icon: List, // FIX: Use the correct icon for a bullet list
     command: (editor) => editor.chain().focus().clearNodes().toggleBulletList().run(),
     isActive: (editor) => editor.isActive("bulletList"),
   },
@@ -90,8 +93,10 @@ interface NodeSelectorProps {
 export const NodeSelector = ({ open, onOpenChange }: NodeSelectorProps) => {
   const { editor } = useEditor();
   if (!editor) return null;
-  const activeItem = items.filter((item) => item.isActive(editor)).pop() ?? {
-    name: "Multiple",
+
+  const activeItem = items.find((item) => item.isActive(editor)) ?? {
+    ...defaultItem, // Use a spread of the default item
+    name: "Multiple", // But override the name to indicate multiple selections
   };
 
   return (
@@ -106,7 +111,7 @@ export const NodeSelector = ({ open, onOpenChange }: NodeSelectorProps) => {
         {items.map((item) => (
           <EditorBubbleItem
             key={item.name}
-            onSelect={(editor) => {
+            onSelect={() => { // onSelect doesn't pass the editor, so we use the one from the hook
               item.command(editor);
               onOpenChange(false);
             }}

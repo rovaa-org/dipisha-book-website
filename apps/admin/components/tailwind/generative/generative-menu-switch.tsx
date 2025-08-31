@@ -13,6 +13,9 @@ const GenerativeMenuSwitch = ({ children, open, onOpenChange }: GenerativeMenuSw
 	const { editor } = useEditor();
 
 	useEffect(() => {
+			if (!editor) {
+		return;
+	}
 		if (!open) removeAIHighlight(editor);
 	}, [open]);
 	return (
@@ -20,6 +23,10 @@ const GenerativeMenuSwitch = ({ children, open, onOpenChange }: GenerativeMenuSw
 			tippyOptions={{
 				placement: open ? "bottom-start" : "top",
 				onHidden: () => {
+						if (!editor) {
+		return;
+	}
+
 					onOpenChange(false);
 					editor.chain().unsetHighlight().run();
 				},
