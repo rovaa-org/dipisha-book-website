@@ -1,3 +1,9 @@
+// Rationale: This is the final version of the editor component with auto-saving to the backend.
+// 1. It now accepts a `postId` prop, which is essential for the API endpoint.
+// 2. The `debouncedUpdates` function is completely replaced with logic that performs a `fetch` call to our Hono API.
+// 3. The save status indicator now provides real-time feedback ("Saving...", "Saved", "Error").
+// 4. The initial content logic is updated to correctly handle being passed a new, empty post.
+
 "use client";
 import { defaultEditorContent } from "@/lib/content";
 import {
@@ -32,7 +38,7 @@ const hljs = require("highlight.js");
 
 const extensions = [...defaultExtensions, slashCommand];
 
-const TailwindAdvancedEditor = ({ initialContent: initialContentProp }: { initialContent?: JSONContent }) => {
+const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: { postId: string, initialContent?: JSONContent }) => {
 	const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
 	const [saveStatus, setSaveStatus] = useState("Saved");
 	const [charsCount, setCharsCount] = useState();
@@ -54,11 +60,25 @@ const TailwindAdvancedEditor = ({ initialContent: initialContentProp }: { initia
 	const debouncedUpdates = useDebouncedCallback(async (editor: EditorInstance) => {
 		const json = editor.getJSON();
 		setCharsCount(editor.storage.characterCount.words());
-		window.localStorage.setItem("html-content", highlightCodeblocks(editor.getHTML()));
-		window.localStorage.setItem("novel-content", JSON.stringify(json));
-		window.localStorage.setItem("markdown", editor.storage.markdown.getMarkdown());
-		setSaveStatus("Saved");
-	}, 500);
+		setSaveStatus("Saving...");
+
+		try {
+			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+			const response = await fetch(`${apiUrl}/api/posts/${postId}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(json),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to save post.");
+			}
+			setSaveStatus("Saved");
+		} catch (error) {
+			console.error(error);
+			setSaveStatus("Error");
+		}
+	}, 1000);
 
 	useEffect(() => {
 		if (initialContentProp) {

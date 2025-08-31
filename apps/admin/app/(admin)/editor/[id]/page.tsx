@@ -9,5 +9,5 @@ export default async function EditorPage({ params }: { params: Promise<{ id: str
 
 	console.log("Editing post with ID:", id);
 
-	return <TailwindAdvancedEditor initialContent={newPostContent} />;
+	return <TailwindAdvancedEditor initialContent={newPostContent} postId={id}/>;
 }

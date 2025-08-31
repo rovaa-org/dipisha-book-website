@@ -1,22 +1,38 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
-import { setCookie, getCookie } from 'hono/cookie';
-import { sign, verify } from 'hono/jwt';
+import { setCookie } from 'hono/cookie';
+import { sign } from 'hono/jwt';
+import { drizzle } from 'drizzle-orm/d1';
+import { posts } from '@dipisha/database';
+import { eq } from 'drizzle-orm';
+import type { D1Database} from "@cloudflare/workers-types";
 
 // This defines the structure of our environment variables
 // We'll need to create a .dev.vars file for wrangler to use these locally
 type Bindings = {
 	JWT_SECRET: string;
 	ADMIN_EMAIL: string;
-	ADMIN_PASS_HASH: string; // IMPORTANT: We'll store a hash, not the plaintext password.
+	ADMIN_PASS_HASH: string;
+	DB: D1Database;
+};
+type Variables = {
+	db: ReturnType<typeof drizzle>;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 app.use('/api/*', cors({
-	allowMethods: ["GET", "POST", "OPTIONS", "DELETE"],
+	allowMethods: ["GET", "POST", "OPTIONS", "DELETE", "PUT"],
 	origin: '*',
 	credentials: true,
 }))
+
+app.use('/api/*', async (c, next) => {
+	const db = drizzle(c.env.DB);
+	c.set('db', db);
+	await next();
+});
+
+
 // --- LOGIN ROUTE ---
 app.post('/api/login', async (c) => {
 	const { email, password } = await c.req.json();
@@ -46,6 +62,70 @@ app.post('/api/login', async (c) => {
 	});
 
 	return c.json({ message: 'Logged in successfully' });
+});
+
+app.get('/api/posts', async (c) => {
+	const db = c.var.db;
+	try {
+		const allPosts = await db.select().from(posts).all();
+		return c.json(allPosts);
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to fetch posts' }, 500);
+	}
+});
+
+
+app.get('/api/posts/:id', async (c) => {
+	const db = c.var.db;
+	const id = c.req.param('id');
+
+	try {
+		const post = await db.select().from(posts).where(eq(posts.id, id)).get();
+		if (!post) {
+			return c.json({ error: 'Post not found' }, 404);
+		}
+		return c.json(post);
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to fetch post' }, 500);
+	}
+});
+
+app.put('/api/posts/:id', async (c) => {
+	const db = c.var.db;
+	const id = c.req.param('id');
+	const content = await c.req.json();
+
+	let title = 'Untitled Post';
+	if (content?.content?.[0]?.content?.[0]?.text) {
+		title = content.content[0].content[0].text;
+	}
+
+	const postData = {
+		id,
+		title,
+		content,
+	};
+
+	try {
+		await db
+			.insert(posts)
+			.values(postData)
+			.onConflictDoUpdate({
+				target: posts.id,
+				set: {
+					title: postData.title,
+					content: postData.content,
+					updatedAt: new Date(),
+				},
+			});
+
+		return c.json({ success: true, message: 'Post saved' });
+	} catch (err) {
+		console.error(err);
+		return c.json({ success: false, error: 'Failed to save post' }, 500);
+	}
 });
 
 export default app;
