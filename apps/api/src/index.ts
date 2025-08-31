@@ -4,7 +4,7 @@ import { setCookie } from 'hono/cookie';
 import { sign } from 'hono/jwt';
 import { drizzle } from 'drizzle-orm/d1';
 import { posts } from '@dipisha/database';
-import { eq } from 'drizzle-orm';
+import { eq, like, and } from 'drizzle-orm';
 import type { D1Database} from "@cloudflare/workers-types";
 
 // This defines the structure of our environment variables
@@ -127,5 +127,24 @@ app.put('/api/posts/:id', async (c) => {
 		return c.json({ success: false, error: 'Failed to save post' }, 500);
 	}
 });
+
+app.delete('/api/posts/:id', async (c) => {
+	const db = c.var.db;
+	const id = c.req.param('id');
+
+	try {
+		const result = await db.delete(posts).where(eq(posts.id, id)).run();
+
+		if (result.changes === 0) {
+			return c.json({ error: 'Post not found' }, 404);
+		}
+
+		return c.json({ success: true, message: 'Post deleted' });
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to delete post' }, 500);
+	}
+});
+
 
 export default app;

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import TailwindAdvancedEditor from "@/components/tailwind/advanced-editor";
-import { newPostContent } from "@/lib/content";
+import { PostViewer } from "@/components/tailwind/post-viewer";
 import { type JSONContent } from "novel";
 
-export default function EditorPage() {
+export default function ViewPostPage() {
 	const { id } = useParams<{ id: string }>();
 	const [content, setContent] = useState<JSONContent | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -20,18 +19,14 @@ export default function EditorPage() {
 				const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
 				const res = await fetch(`${apiUrl}/api/posts/${id}`);
 
-				if (res.status === 404) {
-					// Post not found, it's a new post
-					setContent(newPostContent);
-				} else if (res.ok) {
-					const data = await res.json();
-					setContent(data.content);
-				} else {
+				if (!res.ok) {
 					throw new Error("Failed to fetch post content");
 				}
+                
+                const data = await res.json();
+                setContent(data.content);
 			} catch (error) {
 				console.error(error);
-				// Optionally, set an error state here to show in the UI
 			} finally {
 				setIsLoading(false);
 			}
@@ -40,9 +35,13 @@ export default function EditorPage() {
 		fetchPostContent();
 	}, [id]);
 
-	if (isLoading || !content) {
-		return <div>Loading editor...</div>;
+	if (isLoading) {
+		return <div>Loading post...</div>;
 	}
+    
+    if (!content) {
+        return <div>Post not found or failed to load.</div>;
+    }
 
-	return <TailwindAdvancedEditor postId={id} initialContent={content} />;
+	return <PostViewer content={content} />;
 }
