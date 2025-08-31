@@ -3,7 +3,6 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		 "build:admin": "turbo build --filter=@dipisha/admin",
 		"dev:all": "turbo dev",
 		"dev:admin": "turbo dev --filter=@dipisha/admin",
 		"dev:website": "turbo dev --filter=@dipisha/website",
@@ -12,6 +11,7 @@
 		"format": "prettier --write '**/*.{ts,tsx,md}'"
 	},
 	"devDependencies": {
+		"@opennextjs/cloudflare": "^1.6.5",
 		"@turbo/gen": "^1.10.0",
 		"prettier": "^3.2.5",
 		"turbo": "^2.5.6",
