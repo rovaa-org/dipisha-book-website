@@ -1,0 +1,43 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Next.js: debug admin server-side",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "pnpm dev:admin",
+			"cwd": "${workspaceFolder}"
+		},
+		{
+			"name": "Next.js: debug admin client-side",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:3001"
+		},
+		{
+			"name": "Next.js: debug admin full stack",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/apps/admin/node_modules/next/dist/bin/next",
+			"args": [
+				"dev",
+				"-p",
+				"3001"
+			],
+			"runtimeArgs": [
+				"--inspect"
+			],
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"serverReadyAction": {
+				"action": "debugWithChrome",
+				"killOnServerStop": true,
+				"pattern": "- Local:.+(https?://.+)",
+				"uriFormat": "%s",
+				"webRoot": "${workspaceFolder}/apps/admin"
+			},
+			"cwd": "${workspaceFolder}/apps/admin"
+		}
+	]
+}

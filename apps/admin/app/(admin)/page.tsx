@@ -1,4 +1,5 @@
-import Link from "next/link"
+'use client';
+import { useRouter } from "next/navigation";
 import {
 	File,
 	ListFilter,
@@ -39,6 +40,7 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "@/components/tailwind/ui/tabs"
+import { v4 as uuidv4 } from 'uuid'
 
 // Mock data for posts
 const mockPosts = [
@@ -52,6 +54,12 @@ const mockPosts = [
 export default function Dashboard() {
 	const publishedPosts = mockPosts.filter(p => p.status === 'Published');
 	const draftPosts = mockPosts.filter(p => p.status === 'Draft');
+	const router = useRouter();
+
+	const handleCreateNew = () => {
+		const newPostId = uuidv4();
+		router.push(`/editor/${newPostId}`);
+	};
 
 	return (
 		<Tabs defaultValue="all">
@@ -86,14 +94,12 @@ export default function Dashboard() {
 							Export
 						</span>
 					</Button>
-					<Link href="/editor">
-						<Button size="sm" className="h-8 gap-1">
-							<PlusCircle className="h-3.5 w-3.5" />
-							<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-								Create New Blog
-							</span>
-						</Button>
-					</Link>
+					<Button size="sm" className="h-8 gap-1" onClick={handleCreateNew}>
+						<PlusCircle className="h-3.5 w-3.5" />
+						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+							Create New Blog
+						</span>
+					</Button>
 				</div>
 			</div>
 			<TabsContent value="all">

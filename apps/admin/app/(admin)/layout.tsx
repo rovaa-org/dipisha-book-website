@@ -12,7 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/tailwind/ui/card";
-
+import { Header } from "./_components/header";
 export default function AdminLayout({
 	children,
 }: {
@@ -32,7 +32,7 @@ export default function AdminLayout({
 						<nav className="grid items-start px-2 text-sm font-medium lg:px-4">
 							<Link
 								href="/"
-								className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+								className="flex items-center gap-3 rounded-lg bg-primary px-3 py-2 text-primary-foreground transition-all hover:text-primary-foreground/80"
 							>
 								<Home className="h-4 w-4" />
 								All Posts
@@ -42,21 +42,23 @@ export default function AdminLayout({
 					<div className="mt-auto p-4">
 						<Card>
 							<CardHeader className="p-2 pt-0 md:p-4">
-								<CardTitle>Need Help?</CardTitle>
+								<CardTitle>Found an Issue?</CardTitle>
 								<CardDescription>
-									Contact support if you have any issues with the dashboard.
+									Help us improve by reporting bugs or suggesting features.
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-								<Button size="sm" className="w-full">
-									Contact
-								</Button>
+								<Link href="https://github.com/rovaa-org/dipisha-book-website/issues" target="_blank">
+									<Button size="sm" className="w-full">
+										Give Feedback
+									</Button>
+								</Link>
 							</CardContent>
 						</Card>
-					</div>
-				</div>
+					</div>				</div>
 			</div>
 			<div className="flex flex-col">
+				<Header />
 				{/* We will add a header with search and user menu later */}
 				<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
 					{children}

@@ -12,7 +12,11 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
-app.use('/api/*', cors())
+app.use('/api/*', cors({
+	allowMethods: ["GET", "POST", "OPTIONS", "DELETE"],
+	origin: '*',
+	credentials: true,
+}))
 // --- LOGIN ROUTE ---
 app.post('/api/login', async (c) => {
 	const { email, password } = await c.req.json();
