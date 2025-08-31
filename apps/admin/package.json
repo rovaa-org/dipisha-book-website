@@ -6,7 +6,7 @@
 		"dev": "next dev -p 3001",
 		"dev:debug": "cross-env NODE_OPTIONS='--inspect' next dev -p 3001",
 		"build": "next build",
-		"deploy": "pnpm opennextjs-cloudflare build && pnpm opennextjs-cloudflare deploy",
+		"deploy": "npx opennextjs-cloudflare build && npx opennextjs-cloudflare deploy",
 		"start": "next start",
 		"lint": "biome lint .",
 		"format": "biome format . ",
