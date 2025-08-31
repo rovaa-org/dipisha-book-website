@@ -1,0 +1,26 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "dipisha-website-worker-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-05-15",
+	"observability": {
+		"enabled": true
+	},
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "dipisha-db",
+			"database_id": "4f3e4e81-5678-4883-ada2-064cd41c958b",
+			"migrations_dir": "../../packages/database/migrations"
+		}
+	],
+	"r2_buckets": [
+		{
+			"bucket_name": "dipisha-images",
+			"binding": "R2"
+		}
+	]
+}

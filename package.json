@@ -1,47 +1,21 @@
 {
-  "name": "dipisha-book-website",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write ."
-  },
-  "dependencies": {
-    "@blocknote/core": "^0.35.0",
-    "@blocknote/react": "^0.35.0",
-    "@blocknote/shadcn": "^0.35.0",
-    "@octokit/rest": "^22.0.0",
-    "@radix-ui/react-accordion": "^1.2.2",
-    "@radix-ui/react-avatar": "^1.1.2",
-    "@radix-ui/react-dialog": "^1.1.6",
-    "@radix-ui/react-select": "^2.2.5",
-    "@radix-ui/react-slot": "^1.1.1",
-    "@sentry/nextjs": "^8.54.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "framer-motion": "^11.18.2",
-    "lucide-react": "^0.471.2",
-    "next": "15.1.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.4.0",
-    "react-pdf": "^9.2.1",
-    "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.4",
-    "postcss": "^8",
-    "prettier": "^3.5.2",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+	"name": "dipisha-book-platform",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		 "build:admin": "turbo build --filter=@dipisha/admin",
+		"dev:all": "turbo dev",
+		"dev:admin": "turbo dev --filter=@dipisha/admin",
+		"dev:website": "turbo dev --filter=@dipisha/website",
+		"dev:api": "turbo dev --filter=@dipisha/api",
+		"lint": "turbo lint",
+		"format": "prettier --write '**/*.{ts,tsx,md}'"
+	},
+	"devDependencies": {
+		"@turbo/gen": "^1.10.0",
+		"prettier": "^3.2.5",
+		"turbo": "^2.5.6",
+		"wrangler": "^4.33.1"
+	},
+	"packageManager": "pnpm@9.0.0"
 }
