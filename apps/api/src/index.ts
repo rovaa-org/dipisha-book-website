@@ -5,7 +5,7 @@ import { sign } from 'hono/jwt';
 import { drizzle } from 'drizzle-orm/d1';
 import { posts } from '@dipisha/database';
 import { eq, like, and } from 'drizzle-orm';
-import type { D1Database} from "@cloudflare/workers-types";
+import type { D1Database, R2Bucket} from "@cloudflare/workers-types";
 
 // This defines the structure of our environment variables
 // We'll need to create a .dev.vars file for wrangler to use these locally
@@ -14,6 +14,7 @@ type Bindings = {
 	ADMIN_EMAIL: string;
 	ADMIN_PASS_HASH: string;
 	DB: D1Database;
+	R2: R2Bucket;
 };
 type Variables = {
 	db: ReturnType<typeof drizzle>;
@@ -146,5 +147,30 @@ app.delete('/api/posts/:id', async (c) => {
 	}
 });
 
+app.post('/api/uploads/presign', async (c) => {
+    const { fileType } = await c.req.json<{ fileType: string }>();
+    const { BUCKET_NAME, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY } = env(c);
+
+    // This logic would ideally be more robust, but is fine for now
+    const signedUrl = await handle(
+        {
+            accessKeyId: R2_ACCESS_KEY_ID,
+            secretAccessKey: R2_SECRET_ACCESS_KEY,
+            bucket: BUCKET_NAME,
+            endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        },
+        'presign',
+        `image-${Date.now()}.${fileType.split('/')[1]}`, // e.g. image-1629381923.png
+        {
+            aws: {
+                expiresIn: 3600, // 1 hour
+                region: 'auto',
+            },
+            method: 'PUT',
+        }
+    );
+
+    return c.json({ signedUrl });
+});
 
 export default app;
