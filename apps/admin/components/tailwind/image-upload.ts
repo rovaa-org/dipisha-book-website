@@ -2,41 +2,36 @@ import { createImageUpload } from "novel";
 import { toast } from "sonner";
 
 const onUpload = (file: File) => {
-  const promise = fetch("/api/upload", {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+  const promise = fetch(`${apiUrl}/api/uploads`, { 
     method: "POST",
     headers: {
       "content-type": file?.type || "application/octet-stream",
-      "x-vercel-filename": file?.name || "image.png",
+      "x-dipisha-filename": file?.name || "image.png",
+      "X-Custom-Auth-Key": process.env.NEXT_PUBLIC_UPLOAD_AUTH_KEY!,
     },
     body: file,
   });
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     toast.promise(
       promise.then(async (res) => {
-        // Successfully uploaded image
-        if (res.status === 200) {
+        if (res.ok) {
           const { url } = (await res.json()) as { url: string };
-          // preload the image
           const image = new Image();
           image.src = url;
           image.onload = () => {
             resolve(url);
           };
-          // No blob store configured
-        } else if (res.status === 401) {
-          resolve(file);
-          throw new Error("`BLOB_READ_WRITE_TOKEN` environment variable not found, reading image locally instead.");
-          // Unknown error
         } else {
-          throw new Error("Error uploading image. Please try again.");
+           const errorText = await res.text();
+           throw new Error(`Error uploading image: ${errorText}`);
         }
       }),
       {
         loading: "Uploading image...",
         success: "Image uploaded successfully.",
         error: (e) => {
-          reject(e);
           return e.message;
         },
       },

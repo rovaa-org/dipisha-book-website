@@ -4,7 +4,7 @@ import { setCookie } from 'hono/cookie';
 import { sign } from 'hono/jwt';
 import { drizzle } from 'drizzle-orm/d1';
 import { posts } from '@dipisha/database';
-import { eq, like, and } from 'drizzle-orm';
+import { eq} from 'drizzle-orm';
 import type { D1Database, R2Bucket} from "@cloudflare/workers-types";
 
 // This defines the structure of our environment variables
@@ -13,6 +13,7 @@ type Bindings = {
 	JWT_SECRET: string;
 	ADMIN_EMAIL: string;
 	ADMIN_PASS_HASH: string;
+	UPLOAD_AUTH_KEY: string;
 	DB: D1Database;
 	R2: R2Bucket;
 };
@@ -32,6 +33,10 @@ app.use('/api/*', async (c, next) => {
 	c.set('db', db);
 	await next();
 });
+
+const authorizeRequest = (request: Request, env: Bindings) => {
+	return request.headers.get('x-custom-auth-key') === env.UPLOAD_AUTH_KEY;
+};
 
 
 // --- LOGIN ROUTE ---
@@ -147,30 +152,25 @@ app.delete('/api/posts/:id', async (c) => {
 	}
 });
 
-app.post('/api/uploads/presign', async (c) => {
-    const { fileType } = await c.req.json<{ fileType: string }>();
-    const { BUCKET_NAME, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY } = env(c);
+app.post('/api/uploads', async (c) => {
+	if (!authorizeRequest(c.req.raw, c.env)) {
+		return c.json({ error: 'Forbidden' }, 403);
+	}
 
-    // This logic would ideally be more robust, but is fine for now
-    const signedUrl = await handle(
-        {
-            accessKeyId: R2_ACCESS_KEY_ID,
-            secretAccessKey: R2_SECRET_ACCESS_KEY,
-            bucket: BUCKET_NAME,
-            endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        },
-        'presign',
-        `image-${Date.now()}.${fileType.split('/')[1]}`, // e.g. image-1629381923.png
-        {
-            aws: {
-                expiresIn: 3600, // 1 hour
-                region: 'auto',
-            },
-            method: 'PUT',
-        }
-    );
+	const filename = c.req.header('x-dipisha-Filename') || `image-${Date.now()}`;
+	
+	try {
+		const object = await c.env.R2.put(filename, c.req.raw.body, {
+			httpMetadata: c.req.raw.headers,
+		});
 
-    return c.json({ signedUrl });
+		const publicUrl = `https://pub-aa79c46eef5149deb47cea3e1ca9b261.r2.dev/${object.key}`;
+
+		return c.json({ url: publicUrl });
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to upload image' }, 500);
+	}
 });
 
 export default app;
