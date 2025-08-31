@@ -5,6 +5,7 @@ export const posts = sqliteTable("posts", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content", { mode: "json" }),
+  coverImageUrl: text("cover_image_url"),
   status: text("status", { enum: ["draft", "published"] })
     .notNull()
     .default("draft"),
