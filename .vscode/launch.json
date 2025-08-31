@@ -12,7 +12,8 @@
 			"name": "Next.js: debug admin client-side",
 			"type": "chrome",
 			"request": "launch",
-			"url": "http://localhost:3001"
+			"url": "http://localhost:3001",
+
 		},
 		{
 			"name": "Next.js: debug admin full stack",
@@ -24,6 +25,9 @@
 				"-p",
 				"3001"
 			],
+			 "env": {
+        		"NODE_OPTIONS": "--inspect"
+      		},
 			"runtimeArgs": [
 				"--inspect"
 			],
@@ -37,7 +41,12 @@
 				"uriFormat": "%s",
 				"webRoot": "${workspaceFolder}/apps/admin"
 			},
-			"cwd": "${workspaceFolder}/apps/admin"
+			"cwd": "${workspaceFolder}/apps/admin",
+			"sourceMapPathOverrides": {
+        		"meteor://💻app/*": "${workspaceFolder}/*",
+        		"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        		"webpack://?:*/*": "${workspaceFolder}/*"
+      		}
 		}
 	]
 }
