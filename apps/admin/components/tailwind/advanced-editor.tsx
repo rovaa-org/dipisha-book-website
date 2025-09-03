@@ -38,10 +38,14 @@ const hljs = require("highlight.js");
 
 const extensions = [...defaultExtensions, slashCommand];
 
-const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: { postId: string, initialContent?: JSONContent }) => {
+import { type Post } from "@/lib/content";
+import { Button } from "./ui/button";
+
+const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 	const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
 	const [saveStatus, setSaveStatus] = useState("Saved");
 	const [charsCount, setCharsCount] = useState();
+	const [isDirty, setIsDirty] = useState(false);
 
 	const [openNode, setOpenNode] = useState(false);
 	const [openColor, setOpenColor] = useState(false);
@@ -64,11 +68,13 @@ const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: 
 
 		try {
 			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-			const response = await fetch(`${apiUrl}/api/posts/${postId}`, {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(json),
-			});
+			const response = await fetch(`${apiUrl}/api/posts/${initialPost.id}`,
+				{
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(json),
+				}
+			);
 
 			if (!response.ok) {
 				throw new Error("Failed to save post.");
@@ -80,15 +86,30 @@ const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: 
 		}
 	}, 1000);
 
+	const handlePublish = async () => {
+		try {
+			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+			const res = await fetch(`${apiUrl}/api/posts/${initialPost.id}/status`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ status: 'published' }),
+			});
+			if (!res.ok) throw new Error('Failed to publish post');
+			console.log('[Editor] Published post:', initialPost.id);
+		} catch (err: any) {
+			console.error(err.message);
+		}
+	};
+
 	useEffect(() => {
-		if (initialContentProp) {
-			setInitialContent(initialContentProp);
+		if (initialPost) {
+			setInitialContent(initialPost.content as JSONContent);
 			return;
 		}
 		const content = window.localStorage.getItem("novel-content");
 		if (content) setInitialContent(JSON.parse(content));
 		else setInitialContent(defaultEditorContent);
-	}, [initialContentProp]);
+	}, [initialPost]);
 
 	if (!initialContent) return null;
 
@@ -99,6 +120,7 @@ const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: 
 				<div className={charsCount ? "rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground" : "hidden"}>
 					{charsCount} Words
 				</div>
+				<Button onClick={handlePublish}>Publish</Button>
 			</div>
 			<EditorRoot>
 				<EditorContent
@@ -119,6 +141,20 @@ const TailwindAdvancedEditor = ({ postId, initialContent: initialContentProp }: 
 					onUpdate={({ editor }) => {
 						debouncedUpdates(editor);
 						setSaveStatus("Unsaved");
+						if (!isDirty && initialPost.status === 'published') {
+							setIsDirty(true);
+							try {
+								const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+								fetch(`${apiUrl}/api/posts/${initialPost.id}/status`, {
+									method: 'PATCH',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({ status: 'draft' }),
+								});
+								console.log('[Editor] Auto-setting to draft for post:', initialPost.id);
+							} catch (err: any) {
+								console.error(err.message);
+							}
+						}
 					}}
 					slotAfter={<ImageResizer />}
 				>

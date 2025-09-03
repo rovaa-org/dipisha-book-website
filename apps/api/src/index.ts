@@ -195,6 +195,29 @@ app.patch('/api/posts/:id/cover', async (c) => {
 	}
 });
 
+app.patch('/api/posts/:id/status', async (c) => {
+	const db = c.var.db;
+	const id = c.req.param('id');
+	const { status } = await c.req.json<{ status: 'published' | 'draft' }>();
+
+	if (!status || !['published', 'draft'].includes(status)) {
+		return c.json({ error: 'Invalid status' }, 400);
+	}
+
+	try {
+		await db
+			.update(posts)
+			.set({ status: status, updatedAt: new Date() })
+			.where(eq(posts.id, id));
+
+		console.log('[API] Status Update:', { id, status });
+		return c.json({ success: true, message: 'Status updated' });
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to update status' }, 500);
+	}
+});
+
 app.get("/", (c) => {
  return c.json({"Healthy": "Mean Strong"});
 });

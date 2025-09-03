@@ -1,3 +1,23 @@
+import { type JSONContent } from "novel";
+
+export type Post = {
+	id: string;
+	title: string;
+	content: JSONContent;
+	status: 'draft' | 'published';
+	createdAt: string;
+	updatedAt: string;
+};
+
+export const newPost = (id: string): Post => ({
+	id,
+	title: "Untitled Post",
+	content: newPostContent,
+	status: "draft",
+	createdAt: new Date().toISOString(),
+	updatedAt: new Date().toISOString(),
+});
+
 export const newPostContent = {
 	type: "doc",
 	content: [

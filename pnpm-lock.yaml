@@ -80,6 +80,9 @@ importers:
       highlight.js:
         specifier: ^11.9.0
         version: 11.11.1
+      jose:
+        specifier: ^6.1.0
+        version: 6.1.0
       katex:
         specifier: ^0.16.22
         version: 0.16.22
@@ -5335,6 +5338,9 @@ packages:
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
+
+  jose@6.1.0:
+    resolution: {integrity: sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==}
 
   jotai@2.13.1:
     resolution: {integrity: sha512-cRsw6kFeGC9Z/D3egVKrTXRweycZ4z/k7i2MrfCzPYsL9SIWcPXTyqv258/+Ay8VUEcihNiE/coBLE6Kic6b8A==}
@@ -14401,6 +14407,8 @@ snapshots:
       supports-color: 8.1.1
 
   jiti@1.21.7: {}
+
+  jose@6.1.0: {}
 
   jotai@2.13.1(@babel/core@7.28.3)(@babel/template@7.27.2)(@types/react@18.3.23)(react@18.2.0):
     optionalDependencies:
