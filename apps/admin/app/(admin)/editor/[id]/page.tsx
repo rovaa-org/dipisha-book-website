@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import TailwindAdvancedEditor from "@/components/tailwind/advanced-editor";
-import { newPostContent } from "@/lib/content";
-import { type JSONContent } from "novel";
+import { type Post } from "@/lib/content";
+import { newPost } from "@/lib/content";
 
 export default function EditorPage() {
 	const { id } = useParams<{ id: string }>();
-	const [content, setContent] = useState<JSONContent | null>(null);
+	const [post, setPost] = useState<Post | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		if (!id) return;
 
-		const fetchPostContent = async () => {
+		const fetchPost = async () => {
 			setIsLoading(true);
 			try {
 				const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
@@ -22,12 +22,12 @@ export default function EditorPage() {
 
 				if (res.status === 404) {
 					// Post not found, it's a new post
-					setContent(newPostContent);
+					setPost(newPost(id));
 				} else if (res.ok) {
 					const data = await res.json();
-					setContent(data.content);
+					setPost(data);
 				} else {
-					throw new Error("Failed to fetch post content");
+					throw new Error("Failed to fetch post");
 				}
 			} catch (error) {
 				console.error(error);
@@ -37,12 +37,11 @@ export default function EditorPage() {
 			}
 		};
 
-		fetchPostContent();
+		fetchPost();
 	}, [id]);
 
-	if (isLoading || !content) {
+	if (isLoading || !post) {
 		return <div>Loading editor...</div>;
 	}
 
-	return <TailwindAdvancedEditor postId={id} initialContent={content} />;
-}
+	return <TailwindAdvancedEditor initialPost={post} />;

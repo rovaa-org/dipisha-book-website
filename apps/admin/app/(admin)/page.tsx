@@ -50,7 +50,7 @@ type Post = {
 };
 
 // A reusable component for the table to avoid repetition
-const PostsTable = ({ posts, allPostsCount, handleDelete, router }: { posts: Post[], allPostsCount: number, handleDelete: (id: string) => void, router: any }) => (
+const PostsTable = ({ posts, allPostsCount, handleDelete, router, handleStatusToggle }: { posts: Post[], allPostsCount: number, handleDelete: (id: string) => void, router: any, handleStatusToggle: (id: string, status: 'draft' | 'published') => void }) => (
     <Card>
         <CardHeader>
             <CardTitle>Stories</CardTitle>
@@ -63,6 +63,7 @@ const PostsTable = ({ posts, allPostsCount, handleDelete, router }: { posts: Pos
                         <TableHead>Title</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Last Updated</TableHead>
+                        <TableHead>Actions</TableHead>
                         <TableHead><span className="sr-only">Actions</span></TableHead>
                     </TableRow>
                 </TableHeader>
@@ -77,6 +78,11 @@ const PostsTable = ({ posts, allPostsCount, handleDelete, router }: { posts: Pos
                                 <Badge variant={post.status === 'draft' ? 'secondary' : 'default'}>{post.status}</Badge>
                             </TableCell>
                             <TableCell>{new Date(post.updatedAt).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                                <Button variant="outline" size="sm" onClick={() => handleStatusToggle(post.id, post.status)}>
+                                    {post.status === 'draft' ? 'Publish' : 'Unpublish'}
+                                </Button>
+                            </TableCell>
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -125,6 +131,25 @@ export default function Dashboard() {
 			const res = await fetch(`${apiUrl}/api/posts/${postId}`, { method: 'DELETE' });
 			if (!res.ok) throw new Error('Failed to delete post');
 			setPosts(currentPosts => currentPosts.filter(p => p.id !== postId));
+		} catch (err: any) {
+			console.error(err.message);
+		}
+	};
+
+    const handleStatusToggle = async (postId: string, currentStatus: 'draft' | 'published') => {
+		const newStatus = currentStatus === 'draft' ? 'published' : 'draft';
+		try {
+			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+			const res = await fetch(`${apiUrl}/api/posts/${postId}/status`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ status: newStatus }),
+			});
+			if (!res.ok) throw new Error('Failed to toggle status');
+			setPosts(currentPosts =>
+				currentPosts.map(p => (p.id === postId ? { ...p, status: newStatus } : p))
+			);
+			console.log('[Dashboard] Toggling status for post:', { postId, newStatus });
 		} catch (err: any) {
 			console.error(err.message);
 		}
@@ -198,13 +223,13 @@ export default function Dashboard() {
 				</div>
 			</div>
 			<TabsContent value="all">
-                <PostsTable posts={filteredPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} />
+                <PostsTable posts={filteredPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} handleStatusToggle={handleStatusToggle} />
 			</TabsContent>
             <TabsContent value="published">
-                <PostsTable posts={publishedPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} />
+                <PostsTable posts={publishedPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} handleStatusToggle={handleStatusToggle} />
 			</TabsContent>
             <TabsContent value="drafts">
-                <PostsTable posts={draftPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} />
+                <PostsTable posts={draftPosts} allPostsCount={posts.length} handleDelete={handleDelete} router={router} handleStatusToggle={handleStatusToggle} />
 			</TabsContent>
 		</Tabs>
 	)
