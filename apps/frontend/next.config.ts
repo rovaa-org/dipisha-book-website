@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@dipisha/ui'],
   output: "export",
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

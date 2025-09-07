@@ -1,9 +1,9 @@
-// packages/ui/src/lib/fonts.ts
+// apps/frontend/src/app/fonts.ts
 import localFont from "next/font/local";
 import { Inter } from "next/font/google";
 
 export const cal = localFont({
-  src: "../fonts/CalSans-SemiBold.otf",
+  src: "../assets/fonts/CalSans-SemiBold.otf", // Correct path
   variable: "--font-title",
 });
 

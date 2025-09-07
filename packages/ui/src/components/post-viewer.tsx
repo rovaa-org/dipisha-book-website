@@ -6,7 +6,6 @@ import {
   JSONContent,
 } from "novel";
 import { defaultExtensions } from "../lib/extensions";
-import { cal, inter } from "../lib/fonts";
 import { useMemo } from "react";
 
 interface PostViewerProps {
@@ -16,7 +15,7 @@ interface PostViewerProps {
 export function PostViewer({ content }: PostViewerProps) {
   const contentKey = useMemo(() => JSON.stringify(content), [content]);
   return (
-    <div className={`${cal.variable} ${inter.variable}`}>
+    <div>
         <EditorRoot key={contentKey}>
           <EditorContent
             initialContent={content}

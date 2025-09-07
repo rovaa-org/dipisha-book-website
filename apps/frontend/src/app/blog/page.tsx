@@ -3,7 +3,9 @@ import BlogCard from "../components/BlogCard";
 
 
 async function getPublishedPosts(): Promise<Post[]> {
+
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+    console.log( process.env.NEXT_PUBLIC_API_URL)
     try {
         const res = await fetch(`${apiUrl}/api/published-posts`);
         if (!res.ok) {

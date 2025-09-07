@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Crafty_Girls } from "next/font/google";
 import "@dipisha/styles/tailwind-base.css";
 import "@dipisha/styles/prosemirror.css";
+import { cal, inter } from "./fonts"; // <-- Import our new fonts
 // import "./globals.css";
 
 const geistSans = Geist({
@@ -41,7 +42,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${craftyGirls.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${craftyGirls.variable} ${cal.variable} ${inter.variable} antialiased`}
       >
         {children}
       </body>

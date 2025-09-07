@@ -31,6 +31,7 @@ const allowedOrigins = [
 	'http://192.168.101.2:3001',
 	'https://admin.dipishakalura.com',
 	'https://dipisha-admin.deepeshkalurs.workers.dev',
+	'https://dipishakalura.com'
 ];
 
 
