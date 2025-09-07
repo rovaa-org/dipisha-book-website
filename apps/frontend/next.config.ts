@@ -3,10 +3,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  transpilePackages: ['@dipisha/ui'],
   output: "export",
   images: {
     unoptimized: true,
   },
+  remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+    ],
   experimental: {
     turbo: {
       resolveAlias: {

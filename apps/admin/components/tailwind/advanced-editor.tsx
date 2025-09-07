@@ -1,9 +1,3 @@
-// Rationale: This is the final version of the editor component with auto-saving to the backend.
-// 1. It now accepts a `postId` prop, which is essential for the API endpoint.
-// 2. The `debouncedUpdates` function is completely replaced with logic that performs a `fetch` call to our Hono API.
-// 3. The save status indicator now provides real-time feedback ("Saving...", "Saved", "Error").
-// 4. The initial content logic is updated to correctly handle being passed a new, empty post.
-
 "use client";
 import { defaultEditorContent } from "@/lib/content";
 import {
@@ -40,6 +34,7 @@ const extensions = [...defaultExtensions, slashCommand];
 
 import { type Post } from "@/lib/content";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 	const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
@@ -95,8 +90,10 @@ const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 				body: JSON.stringify({ status: 'published' }),
 			});
 			if (!res.ok) throw new Error('Failed to publish post');
+			toast.success("Post published successfully!");
 			console.log('[Editor] Published post:', initialPost.id);
 		} catch (err: any) {
+			toast.error("Post are not getting published let the developer know asap!");
 			console.error(err.message);
 		}
 	};

@@ -45,3 +45,4 @@ export default function EditorPage() {
 	}
 
 	return <TailwindAdvancedEditor initialPost={post} />;
+}

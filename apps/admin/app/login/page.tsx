@@ -25,22 +25,23 @@ export default function LoginPage() {
 		setError("");
 		setIsLoading(true);
 
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8787/api/login";
+		const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8787";
 
 		try {
-			const res = await fetch(apiUrl, {
+			const res = await fetch(`${apiUrl}/api/login`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, password }),
+				credentials: 'include',
 			});
 
 			if (!res.ok) {
 				const data = await res.json();
 				throw new Error(data.error || "Login failed. Please check your credentials.");
 			}
-
+			await router.refresh();
 			router.push("/");
-		} catch (err: any) {
+		} catch (err: any) {``
 			setError(err.message);
 		} finally {
 			setIsLoading(false);

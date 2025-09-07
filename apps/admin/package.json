@@ -49,7 +49,9 @@
 		"ts-pattern": "^5.0.8",
 		"typescript": "^5.4.2",
 		"use-debounce": "^10.0.0",
-		"uuid": "^11.1.0"
+		"uuid": "^11.1.0",
+		"@dipisha/ui": "workspace:*",
+		"@dipisha/styles": "workspace:*"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.2",

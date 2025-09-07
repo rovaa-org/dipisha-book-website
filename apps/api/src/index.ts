@@ -4,7 +4,7 @@ import { setCookie } from 'hono/cookie';
 import { sign } from 'hono/jwt';
 import { drizzle } from 'drizzle-orm/d1';
 import { posts } from '@dipisha/database';
-import { eq} from 'drizzle-orm';
+import { desc, eq} from 'drizzle-orm';
 import type { D1Database, R2Bucket} from "@cloudflare/workers-types";
 
 // This defines the structure of our environment variables
@@ -22,11 +22,29 @@ type Variables = {
 };
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+
+const allowedOrigins = [
+	'http://localhost:3000',
+	'http://localhost:3001',
+	'http://127.0.0.1:3001',
+	'http://192.168.101.2:3001',
+	'https://admin.dipishakalura.com',
+	'https://dipisha-admin.deepeshkalurs.workers.dev',
+];
+
+
 app.use('/api/*', cors({
-	allowMethods: ["GET", "POST", "OPTIONS", "DELETE", "PUT"],
-	origin: '*',
+	allowMethods: ["GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"],
+	origin: (origin, c) => {
+		if (allowedOrigins.includes(origin)) {
+			return origin;
+		}
+		return 'https://admin.dipishakalura.com';
+	},
 	credentials: true,
+	allowHeaders: ['Content-Type', 'Authorization', 'X-Custom-Auth-Key', 'x-dipisha-filename'],
 }))
+
 
 app.use('/api/*', async (c, next) => {
 	const db = drizzle(c.env.DB);
@@ -59,16 +77,22 @@ app.post('/api/login', async (c) => {
 
 	const token = await sign(payload, c.env.JWT_SECRET);
 
+	const isSecure = c.req.url.startsWith('https://');
+
+	// Use Hono's setCookie helper for a cleaner and safer implementation
 	setCookie(c, 'auth_session', token, {
 		path: '/',
-		secure: true, // Only send over HTTPS
-		httpOnly: true, // Cannot be accessed by client-side JS
-		maxAge: 604800, // 7 days in seconds
-		sameSite: 'Strict', // Protection against CSRF
+		maxAge: 604800, // 7 days
+		httpOnly: true,
+		secure: isSecure, // IMPORTANT: Only set 'Secure' in HTTPS environments
+		sameSite: isSecure ? 'None' : 'Lax', // 'None' requires 'Secure', 'Lax' is a safe default
 	});
+
+	console.log(`[API] Login successful. Cookie set with Secure=${isSecure}`);
 
 	return c.json({ message: 'Logged in successfully' });
 });
+
 
 app.get('/api/posts', async (c) => {
 	const db = c.var.db;
@@ -217,6 +241,25 @@ app.patch('/api/posts/:id/status', async (c) => {
 		return c.json({ error: 'Failed to update status' }, 500);
 	}
 });
+
+// --- PUBLIC ENDPOINTS ---
+app.get('/api/published-posts', async (c) => {
+	const db = c.var.db;
+	try {
+		const publishedPosts = await db
+			.select()
+			.from(posts)
+			.where(eq(posts.status, 'published'))
+			.orderBy(desc(posts.pinned), desc(posts.createdAt))
+			.all();
+		return c.json(publishedPosts);
+	} catch (err) {
+		console.error(err);
+		return c.json({ error: 'Failed to fetch published posts' }, 500);
+	}
+});
+
+
 
 app.get("/", (c) => {
  return c.json({"Healthy": "Mean Strong"});

@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
+import { toast } from "sonner";
 import {
 	MoreHorizontal,
 	PlusCircle,
@@ -149,8 +150,10 @@ export default function Dashboard() {
 			setPosts(currentPosts =>
 				currentPosts.map(p => (p.id === postId ? { ...p, status: newStatus } : p))
 			);
+            toast.success(`Post has been ${newStatus === 'published' ? 'published' : 'moved to drafts'}.`);
 			console.log('[Dashboard] Toggling status for post:', { postId, newStatus });
 		} catch (err: any) {
+            toast.error('Post was not published contact with the creator of the website ')
 			console.error(err.message);
 		}
 	};

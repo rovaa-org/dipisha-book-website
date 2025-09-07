@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, Home, BookOpen, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -11,12 +11,17 @@ interface NavItem {
   icon: LucideIcon;
 }
 
+const items: NavItem[] = [
+    { name: "Home", url: "#home", icon: Home },
+    { name: "Blog", url: "/blog", icon: PenSquare },
+    { name: "Books", url: "#books", icon: BookOpen },
+];
+
 interface NavBarProps {
-  items: NavItem[];
   className?: string;
 }
 
-export function NavBar({ items, className }: NavBarProps) {
+export function NavBar({ className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name);
   const [, setIsMobile] = useState(false); // it has ismobile value which is not been used
 

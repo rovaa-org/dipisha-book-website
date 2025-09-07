@@ -1,11 +1,14 @@
 import type { Config } from "tailwindcss";
+import sharedConfig from "@dipisha/ui/tailwind.config";
 
 export default {
+  presets: [sharedConfig],
   darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/ui/src/**/*.{ts,tsx}",
   ],
   theme: {
     fontFamily: {

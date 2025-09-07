@@ -1,5 +1,5 @@
-import "@/styles/globals.css";
-import "@/styles/prosemirror.css";
+import "@dipisha/styles/tailwind-base.css";
+import "@dipisha/styles/prosemirror.css";
 import 'katex/dist/katex.min.css';
 
 import type { Metadata, Viewport } from "next";
