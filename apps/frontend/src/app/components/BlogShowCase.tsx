@@ -4,17 +4,28 @@ import { motion } from "framer-motion";
 import { PenSquare, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Post } from "@/app/types/post";
+import { type JSONContent } from "novel";
 
-const getPreview = (content: any): string => {
+const getPreview = (content: JSONContent): string => {
   if (!content || !content.content) return "Click to read more...";
-  const paragraph = content.content.find((node: any) => node.type === 'paragraph');
-  if (paragraph && paragraph.content) {
-    const text = paragraph.content.map((textNode: any) => textNode.text || '').join('');
-    return text.substring(0, 120) + (text.length > 120 ? '...' : '');
-  }
-  return "Click to read more...";
-};
 
+  let previewText = "";
+  // Iterate through the top-level nodes of the document
+  for (const node of content.content) {
+    if (node.type === 'paragraph' && node.content) {
+      // Extract text from the paragraph's content
+      const text = node.content.map((textNode) => textNode.text || "").join('');
+      previewText += text + " ";
+    }
+    // Stop once we have enough text for a preview
+    if (previewText.length > 150) break;
+  }
+  
+  if (previewText.length === 0) return "Click to read more...";
+
+  const trimmedText = previewText.trim();
+  return trimmedText.substring(0, 150) + (trimmedText.length > 150 ? "..." : "");
+};
 export const BlogCard = ({ post }: { post: Post }) => (
   <Link href={`/blog/${post.id}`} className="block w-80 flex-shrink-0 snap-center">
     <motion.div

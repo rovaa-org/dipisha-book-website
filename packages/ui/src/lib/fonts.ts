@@ -10,4 +10,4 @@ export const cal = localFont({
 export const inter = Inter({
   variable: "--font-default",
   subsets: ["latin"],
-})
+});

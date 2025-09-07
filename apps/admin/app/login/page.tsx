@@ -39,10 +39,11 @@ export default function LoginPage() {
 				const data = await res.json();
 				throw new Error(data.error || "Login failed. Please check your credentials.");
 			}
-			await router.refresh();
+			router.refresh();
 			router.push("/");
-		} catch (err: any) {``
-			setError(err.message);
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : "Unexpected error";
+			setError(message);
 		} finally {
 			setIsLoading(false);
 		}

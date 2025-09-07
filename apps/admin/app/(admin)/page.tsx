@@ -153,7 +153,10 @@ export default function Dashboard() {
             toast.success(`Post has been ${newStatus === 'published' ? 'published' : 'moved to drafts'}.`);
 			console.log('[Dashboard] Toggling status for post:', { postId, newStatus });
 		} catch (err: any) {
-            toast.error('Post was not published contact with the creator of the website ')
+            toast.error(
+              `Failed to ${newStatus === 'published' ? 'publish' : 'move to drafts'} post.`,
+              { description: err?.message ?? 'Please try again or contact the site owner.' }
+            )
 			console.error(err.message);
 		}
 	};

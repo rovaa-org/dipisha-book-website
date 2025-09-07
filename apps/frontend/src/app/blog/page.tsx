@@ -1,11 +1,11 @@
 import { Post } from "@/app/types/post";
 import BlogCard from "../components/BlogCard";
 
+
 async function getPublishedPosts(): Promise<Post[]> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
     try {
-        // Use 'no-cache' to ensure we get fresh data, or a revalidation strategy.
-        const res = await fetch(`${apiUrl}/api/published-posts`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/published-posts`);
         if (!res.ok) {
             throw new Error(`Failed to fetch posts: ${res.statusText}`);
         }

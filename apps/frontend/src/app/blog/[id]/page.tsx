@@ -26,7 +26,8 @@ export async function generateStaticParams() {
 async function getPost(id: string): Promise<Post | null> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
     try {
-        const res = await fetch(`${apiUrl}/api/posts/${id}`, { next: { revalidate: 3600 } });
+        // Removed revalidate option to allow for static generation
+        const res = await fetch(`${apiUrl}/api/posts/${id}`);
         if (res.status === 404) return null;
         if (!res.ok) throw new Error('Failed to fetch post');
         return res.json();

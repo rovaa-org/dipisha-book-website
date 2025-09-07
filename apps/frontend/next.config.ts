@@ -6,14 +6,13 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@dipisha/ui'],
   output: "export",
   images: {
-    unoptimized: true,
-  },
-  remotePatterns: [
+    remotePatterns: [
       {
         protocol: 'https',
         hostname: 'picsum.photos',
       },
     ],
+  },
   experimental: {
     turbo: {
       resolveAlias: {

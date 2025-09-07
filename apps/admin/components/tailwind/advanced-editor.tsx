@@ -93,7 +93,7 @@ const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 			toast.success("Post published successfully!");
 			console.log('[Editor] Published post:', initialPost.id);
 		} catch (err: any) {
-			toast.error("Post are not getting published let the developer know asap!");
+			toast.error("Failed to publish the post. Please try again.");
 			console.error(err.message);
 		}
 	};

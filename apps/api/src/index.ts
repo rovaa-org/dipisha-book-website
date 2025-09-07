@@ -23,6 +23,7 @@ type Variables = {
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
+// potential management need here
 const allowedOrigins = [
 	'http://localhost:3000',
 	'http://localhost:3001',
@@ -35,12 +36,12 @@ const allowedOrigins = [
 
 app.use('/api/*', cors({
 	allowMethods: ["GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"],
-	origin: (origin, c) => {
-		if (allowedOrigins.includes(origin)) {
-			return origin;
-		}
-		return 'https://admin.dipishakalura.com';
-	},
+    origin: (origin, c) => {
+        if (allowedOrigins.includes(origin)) {
+            return origin;
+        }
+        return null; // Reject requests from unauthorized origins
+    },
 	credentials: true,
 	allowHeaders: ['Content-Type', 'Authorization', 'X-Custom-Auth-Key', 'x-dipisha-filename'],
 }))
@@ -61,11 +62,14 @@ const authorizeRequest = (request: Request, env: Bindings) => {
 app.post('/api/login', async (c) => {
 	const { email, password } = await c.req.json();
 
-	// In a real app, you would hash the incoming password and compare it to the stored hash.
-	// For now, we'll do a simple string comparison for demonstration.
-	// We'll replace this with a proper hash check later.
-	if (email !== c.env.ADMIN_EMAIL || password !== c.env.ADMIN_PASS_HASH) {
-		return c.json({ error: 'Invalid credentials' }, 401);
+	const isEmailMatch = email === c.env.ADMIN_EMAIL;
+	const isPasswordMatch = password === c.env.ADMIN_PASS_HASH;
+
+	if (!isEmailMatch || !isPasswordMatch) {
+		// Private logs for debugging in Cloudflare Dashboard
+		console.log(`[API Auth Failure] Email Match: ${isEmailMatch}, Password Match: ${isPasswordMatch}`);
+		console.log(`[API Auth Failure] Received Email Length: ${email?.length}, Expected Email Length: ${c.env.ADMIN_EMAIL?.length}`);
+		return c.json({ error: 'Authentication failed. Please check your credentials.' }, 401);
 	}
 
 	// Credentials are valid, create a JWT payload
@@ -82,6 +86,7 @@ app.post('/api/login', async (c) => {
 	// Use Hono's setCookie helper for a cleaner and safer implementation
 	setCookie(c, 'auth_session', token, {
 		path: '/',
+		domain: isSecure ? '.deepeshkalurs.workers.dev': 'http://127.0.0.1:3001',
 		maxAge: 604800, // 7 days
 		httpOnly: true,
 		secure: isSecure, // IMPORTANT: Only set 'Secure' in HTTPS environments
