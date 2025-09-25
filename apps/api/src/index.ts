@@ -14,6 +14,7 @@ type Bindings = {
 	ADMIN_EMAIL: string;
 	ADMIN_PASS_HASH: string;
 	UPLOAD_AUTH_KEY: string;
+	GITHUB_PAT:string;
 	DB: D1Database;
 	R2: R2Bucket;
 };
@@ -266,8 +267,47 @@ app.get('/api/published-posts', async (c) => {
 });
 
 
+app.post('/api/trigger-rebuild', async (c) => {
+	const owner = 'rovaa-org'; // Your GitHub username or organization
+	const repo = 'dipisha-book-website'; // Your repository name
+	const workflow_id = 'deploy-frontend.yml'; // The filename of the workflow
+	const ref = 'main'; // The branch to deploy
+
+	const githubToken = c.env.GITHUB_PAT;
+
+	if (!githubToken) {
+		console.error('[API] GITHUB_PAT secret is not set.');
+		return c.json({ error: 'Server configuration error.' }, 500);
+	}
+
+	const dispatchUrl = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`;
+
+	try {
+		const response = await fetch(dispatchUrl, {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${githubToken}`,
+				'Accept': 'application/vnd.github.v3+json',
+				'User-Agent': 'Dipisha-Admin-Dashboard'
+			},
+			body: JSON.stringify({ ref }),
+		});
+
+		if (response.status !== 204) {
+			const errorBody = await response.text();
+			throw new Error(`Failed to trigger GitHub Action: ${response.status} ${errorBody}`);
+		}
+
+		return c.json({ success: true, message: 'Frontend rebuild triggered successfully.' });
+	} catch (err: any) {
+		console.error(err.message);
+		return c.json({ error: 'Failed to trigger rebuild.' }, 500);
+	}
+});
+
 
 app.get("/", (c) => {
  return c.json({"Healthy": "Mean Strong"});
 });
+
 export default app;
