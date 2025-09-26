@@ -31,7 +31,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install 
 
       - name: Create .env file
         run: echo "NEXT_PUBLIC_API_URL=https://dipisha-website-worker-api.deepeshkalurs.workers.dev" > apps/frontend/.env
@@ -40,5 +40,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm --filter @dipisha/website deploy 
-        working-directory: 'apps/frontend'
+        run: pnpm deploy:frontend
