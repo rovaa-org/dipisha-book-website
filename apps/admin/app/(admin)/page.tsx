@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import {
 	MoreHorizontal,
 	PlusCircle,
-    Search,
     CloudUpload
 } from "lucide-react"
 
@@ -42,6 +41,7 @@ import {
 	TabsTrigger,
 } from "@/components/tailwind/ui/tabs"
 import { v4 as uuidv4 } from 'uuid';
+import { apiFetch } from "@/lib/api";
 
 
 type Post = {
@@ -131,7 +131,7 @@ export default function Dashboard() {
 		if (!confirm('Are you sure you want to delete this post?')) return;
 		try {
 			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-			const res = await fetch(`${apiUrl}/api/posts/${postId}`, { method: 'DELETE' });
+			const res = await apiFetch(`${apiUrl}/api/posts/${postId}`, { method: 'DELETE' });
 			if (!res.ok) throw new Error('Failed to delete post');
 			setPosts(currentPosts => currentPosts.filter(p => p.id !== postId));
 		} catch (err: any) {
@@ -139,18 +139,21 @@ export default function Dashboard() {
 		}
 	};
 
+
     const flushChanges = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-            const res = await fetch(`${apiUrl}/api/trigger-rebuild`,  {
+             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+            const res = await apiFetch(`${apiUrl}/api/trigger-rebuild`,  {
                 method: "POST",
             });
 
-            if (res.status == 200 ){
-                var result = await res.json();
-                toast(result.message);
+            const payload = await res.json().catch(() => null);
+            const message = payload?.message ?? "Failed to flush changes";
+
+            if (res.ok) {
+                toast(message);
             } else {
-                toast(result.message);
+                toast.error?.(message) ?? toast(message);
             }
         } catch (e) {
             toast("Failed to do so");
@@ -163,7 +166,7 @@ export default function Dashboard() {
 		const newStatus = currentStatus === 'draft' ? 'published' : 'draft';
 		try {
 			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-			const res = await fetch(`${apiUrl}/api/posts/${postId}/status`, {
+			const res = await apiFetch(`${apiUrl}/api/posts/${postId}/status`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ status: newStatus }),
@@ -187,7 +190,7 @@ export default function Dashboard() {
         async function fetchPosts() {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
             try {
-                const res = await fetch(`${apiUrl}/api/posts`);
+                const res = await apiFetch(`${apiUrl}/api/posts`);
                 if (!res.ok) throw new Error('Failed to fetch posts');
                 const data = await res.json();
                 setPosts(data);

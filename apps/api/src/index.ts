@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
-import { setCookie } from 'hono/cookie';
-import { sign } from 'hono/jwt';
+import { sign, verify } from 'hono/jwt';
 import { drizzle } from 'drizzle-orm/d1';
 import { posts } from '@dipisha/database';
 import { desc, eq} from 'drizzle-orm';
@@ -70,62 +69,53 @@ app.post('/api/login', async (c) => {
 
 	if (!isEmailMatch || !isPasswordMatch) {
 		console.log(`[API Auth Failure] Email Match: ${isEmailMatch}, Password Match: ${isPasswordMatch}`);
-		console.log(`[API Auth Failure] Received Email: "${email}", Expected Length: ${c.env.ADMIN_EMAIL?.length}`);
 		return c.json({ error: 'Authentication failed. Please check your credentials.' }, 401);
 	}
 
-	// Credentials are valid, create a JWT payload
+	// Create JWT payload
 	const payload = {
 		sub: email,
 		role: 'admin',
-		exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expires in 7 days
+		exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
 	};
 
 	const token = await sign(payload, c.env.JWT_SECRET);
 
-	// Get request URL info for proper domain handling
-	const url = new URL(c.req.url);
-	const isSecure = url.protocol === 'https:';
-	const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-
-	console.log(`[API] Login request from: ${url.hostname}:${url.port}, secure: ${isSecure}`);
-
-	// Fix cookie configuration
-	let cookieOptions: any = {
-		path: '/',
-		maxAge: 604800, // 7 days
-		httpOnly: true,
-		secure: isSecure,
-		sameSite: isSecure ? 'None' : 'Lax',
-	};
-
-	// Only set domain for production or when explicitly needed
-	if (isSecure && !isLocalhost) {
-		// For production, set domain properly
-		if (url.hostname.includes('workers.dev')) {
-			cookieOptions.domain = '.workers.dev';
-		} else if (url.hostname.includes('dipishakalura.com')) {
-			cookieOptions.domain = '.dipishakalura.com';
-		}
-	}
-	// For localhost, don't set domain at all - let browser handle it
-
-	setCookie(c, 'auth_session', token, cookieOptions);
-
-	console.log(`[API] Login successful. Cookie options:`, cookieOptions);
+	console.log(`[API] Login successful for ${email}`);
 
 	return c.json({ 
 		message: 'Logged in successfully',
-		// Optional: return cookie info for debugging
-		debug: {
-			cookieOptions,
-			hostname: url.hostname,
-			isSecure,
-			isLocalhost
-		}
+		token: token,
+		expiresIn: 7 * 24 * 60 * 60 // 7 days in seconds
 	});
 });
-``
+
+const requireAuth = async (c: any, next: any) => {
+	try {
+		// Check for Authorization header
+		const authHeader = c.req.header('Authorization');
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			return c.json({ error: 'Authorization header required' }, 401);
+		}
+
+		const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+		const payload = await verify(token, c.env.JWT_SECRET);
+		
+		if (!payload) {
+			return c.json({ error: 'Invalid token' }, 401);
+		}
+
+		// Add user info to context
+		c.set('user', payload);
+		await next();
+	} catch (error) {
+		console.error('[Auth] Token verification failed:', error);
+		return c.json({ error: 'Invalid or expired token' }, 401);
+	}
+};
+
+app.use('/api/posts/*', requireAuth);
+app.use('/api/uploads', requireAuth);
 
 app.get('/api/posts', async (c) => {
 	const db = c.var.db;

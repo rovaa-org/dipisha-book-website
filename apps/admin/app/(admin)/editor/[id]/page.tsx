@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import TailwindAdvancedEditor from "@/components/tailwind/advanced-editor";
 import { type Post } from "@/lib/content";
 import { newPost } from "@/lib/content";
+import { apiFetch } from "@/lib/api";
 
 export default function EditorPage() {
 	const { id } = useParams<{ id: string }>();
@@ -18,7 +19,7 @@ export default function EditorPage() {
 			setIsLoading(true);
 			try {
 				const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-				const res = await fetch(`${apiUrl}/api/posts/${id}`);
+				const res = await apiFetch(`${apiUrl}/api/posts/${id}`);
 
 				if (res.status === 404) {
 					// Post not found, it's a new post

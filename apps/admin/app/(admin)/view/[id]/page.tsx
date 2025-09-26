@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { PostViewer } from "@/components/tailwind/post-viewer";
 import { type JSONContent } from "novel";
+import { apiFetch } from "@/lib/api";
 
 export default function ViewPostPage() {
 	const { id } = useParams<{ id: string }>();
@@ -17,7 +18,7 @@ export default function ViewPostPage() {
 			setIsLoading(true);
 			try {
 				const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-				const res = await fetch(`${apiUrl}/api/posts/${id}`);
+				const res = await apiFetch(`${apiUrl}/api/posts/${id}`);
 
 				if (!res.ok) {
 					throw new Error("Failed to fetch post content");

@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
 	FileText,
 	Home,
 } from "lucide-react";
-import { Badge } from "@/components/tailwind/ui/badge";
 import { Button } from "@/components/tailwind/ui/button";
 import {
 	Card,
@@ -13,11 +16,29 @@ import {
 	CardTitle,
 } from "@/components/tailwind/ui/card";
 import { Header } from "./_components/header";
+
 export default function AdminLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const router = useRouter();
+	const [isVerified, setIsVerified] = useState(false);
+
+	useEffect(() => {
+		const token = localStorage.getItem("auth_token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			setIsVerified(true);
+		}
+	}, [router]);
+
+	if (!isVerified) {
+		// You can return a loading spinner here while the check is happening
+		return <div>Loading...</div>;
+	}
+
 	return (
 		<div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
 			<div className="hidden border-r bg-muted/40 md:block">
@@ -55,11 +76,11 @@ export default function AdminLayout({
 								</Link>
 							</CardContent>
 						</Card>
-					</div>				</div>
+					</div>
+				</div>
 			</div>
 			<div className="flex flex-col">
 				<Header />
-				{/* We will add a header with search and user menu later */}
 				<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
 					{children}
 				</main>

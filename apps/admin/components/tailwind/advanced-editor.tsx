@@ -35,6 +35,7 @@ const extensions = [...defaultExtensions, slashCommand];
 import { type Post } from "@/lib/content";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/api";
 
 const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 	const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
@@ -63,7 +64,7 @@ const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 
 		try {
 			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-			const response = await fetch(`${apiUrl}/api/posts/${initialPost.id}`,
+			const response = await apiFetch(`${apiUrl}/api/posts/${initialPost.id}`,
 				{
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
@@ -84,7 +85,7 @@ const TailwindAdvancedEditor = ({ initialPost }: { initialPost: Post }) => {
 	const handlePublish = async () => {
 		try {
 			const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-			const res = await fetch(`${apiUrl}/api/posts/${initialPost.id}/status`, {
+			const res = await apiFetch(`${apiUrl}/api/posts/${initialPost.id}/status`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ status: 'published' }),

@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "wrangler dev src/index.ts",
-		"deploy": "wrangler deploy"
+		"deploy": "pnpm wrangler deploy"
 	},
 	"dependencies": {
 		"@dipisha/database": "workspace:^",

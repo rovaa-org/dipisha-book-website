@@ -18,7 +18,6 @@ export default function LoginPage() {
     setError("");
     setIsLoading(true);
 
-    // Get the API URL - handle both development and production
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8787";
     
     console.log('[LOGIN] Attempting login to:', apiUrl);
@@ -30,7 +29,6 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-        credentials: 'include', 
       });
 
       const data = await res.json();
@@ -41,13 +39,13 @@ export default function LoginPage() {
 
       console.log('[LOGIN] Success:', data);
       
-      // Optional: Log cookie debug info if available
-      if (data.debug) {
-        console.log('[LOGIN] Cookie debug:', data.debug);
+      // Store the token in localStorage
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+        router.push('/');
+      } else {
+        throw new Error("No token received from server.");
       }
-
-      // Force a hard refresh to ensure cookies are properly set
-      window.location.href = '/';
       
     } catch (err: unknown) {
       console.error('[LOGIN] Error:', err);
@@ -99,11 +97,6 @@ export default function LoginPage() {
               </Button>
             </div>
           </form>
-          
-          {/* Debug info - remove in production */}
-          <div className="mt-4 text-xs text-gray-500">
-            <p>API URL: {process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8787"}</p>
-          </div>
         </CardContent>
       </Card>
     </div>

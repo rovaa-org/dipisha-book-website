@@ -1,9 +1,10 @@
+import { apiFetch } from "@/lib/api";
 import { createImageUpload } from "novel";
 import { toast } from "sonner";
 
 const onUpload = (file: File) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
-  const promise = fetch(`${apiUrl}/api/uploads`, { 
+  const promise = apiFetch(`${apiUrl}/api/uploads`, { 
     method: "POST",
     headers: {
       "content-type": file?.type || "application/octet-stream",
