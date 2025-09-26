@@ -14,6 +14,8 @@
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "^1.1.0",
+		"@dipisha/styles": "workspace:*",
+		"@dipisha/ui": "workspace:*",
 		"@radix-ui/react-dialog": "^1.0.5",
 		"@radix-ui/react-dropdown-menu": "^2.1.16",
 		"@radix-ui/react-label": "^2.1.7",
@@ -36,6 +38,7 @@
 		"lowlight": "^3.1.0",
 		"lucide-react": "^0.358.0",
 		"next": "15.1.4",
+		"next-theme": "^0.1.5",
 		"next-themes": "^0.2.1",
 		"novel": "^1.0.2",
 		"openai": "^4.28.4",
@@ -49,9 +52,7 @@
 		"ts-pattern": "^5.0.8",
 		"typescript": "^5.4.2",
 		"use-debounce": "^10.0.0",
-		"uuid": "^11.1.0",
-		"@dipisha/ui": "workspace:*",
-		"@dipisha/styles": "workspace:*"
+		"uuid": "^11.1.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.2",

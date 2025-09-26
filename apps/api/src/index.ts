@@ -28,6 +28,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 const allowedOrigins = [
 	'http://localhost:3000',
 	'http://localhost:3001',
+	'http://127.0.0.1:3000',
 	'http://127.0.0.1:3001',
 	'http://192.168.101.2:3001',
 	'https://admin.dipishakalura.com',
@@ -68,38 +69,63 @@ app.post('/api/login', async (c) => {
 	const isPasswordMatch = password === c.env.ADMIN_PASS_HASH;
 
 	if (!isEmailMatch || !isPasswordMatch) {
-		// Private logs for debugging in Cloudflare Dashboard
 		console.log(`[API Auth Failure] Email Match: ${isEmailMatch}, Password Match: ${isPasswordMatch}`);
-		console.log(`[API Auth Failure] Received Email Length: ${email?.length}, Expected Email Length: ${c.env.ADMIN_EMAIL?.length}`);
+		console.log(`[API Auth Failure] Received Email: "${email}", Expected Length: ${c.env.ADMIN_EMAIL?.length}`);
 		return c.json({ error: 'Authentication failed. Please check your credentials.' }, 401);
 	}
 
 	// Credentials are valid, create a JWT payload
 	const payload = {
-		sub: email, // Subject (the user)
+		sub: email,
 		role: 'admin',
 		exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expires in 7 days
 	};
 
 	const token = await sign(payload, c.env.JWT_SECRET);
 
-	const isSecure = c.req.url.startsWith('https://');
+	// Get request URL info for proper domain handling
+	const url = new URL(c.req.url);
+	const isSecure = url.protocol === 'https:';
+	const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
 
-	// Use Hono's setCookie helper for a cleaner and safer implementation
-	setCookie(c, 'auth_session', token, {
+	console.log(`[API] Login request from: ${url.hostname}:${url.port}, secure: ${isSecure}`);
+
+	// Fix cookie configuration
+	let cookieOptions: any = {
 		path: '/',
-		domain: isSecure ? '.deepeshkalurs.workers.dev': 'http://127.0.0.1:3001',
 		maxAge: 604800, // 7 days
 		httpOnly: true,
-		secure: isSecure, // IMPORTANT: Only set 'Secure' in HTTPS environments
-		sameSite: isSecure ? 'None' : 'Lax', // 'None' requires 'Secure', 'Lax' is a safe default
+		secure: isSecure,
+		sameSite: isSecure ? 'None' : 'Lax',
+	};
+
+	// Only set domain for production or when explicitly needed
+	if (isSecure && !isLocalhost) {
+		// For production, set domain properly
+		if (url.hostname.includes('workers.dev')) {
+			cookieOptions.domain = '.workers.dev';
+		} else if (url.hostname.includes('dipishakalura.com')) {
+			cookieOptions.domain = '.dipishakalura.com';
+		}
+	}
+	// For localhost, don't set domain at all - let browser handle it
+
+	setCookie(c, 'auth_session', token, cookieOptions);
+
+	console.log(`[API] Login successful. Cookie options:`, cookieOptions);
+
+	return c.json({ 
+		message: 'Logged in successfully',
+		// Optional: return cookie info for debugging
+		debug: {
+			cookieOptions,
+			hostname: url.hostname,
+			isSecure,
+			isLocalhost
+		}
 	});
-
-	console.log(`[API] Login successful. Cookie set with Secure=${isSecure}`);
-
-	return c.json({ message: 'Logged in successfully' });
 });
-
+``
 
 app.get('/api/posts', async (c) => {
 	const db = c.var.db;

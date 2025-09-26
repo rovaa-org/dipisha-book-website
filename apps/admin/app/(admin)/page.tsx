@@ -6,6 +6,7 @@ import {
 	MoreHorizontal,
 	PlusCircle,
     Search,
+    CloudUpload
 } from "lucide-react"
 
 import { Badge } from "@/components/tailwind/ui/badge"
@@ -25,7 +26,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from "@/components/tailwind/ui/dropdown-menu"
-import { Input } from "@/components/tailwind/ui/input";
+
 import {
 	Table,
 	TableBody,
@@ -41,7 +42,7 @@ import {
 	TabsTrigger,
 } from "@/components/tailwind/ui/tabs"
 import { v4 as uuidv4 } from 'uuid';
-import Link from "next/link"; 
+
 
 type Post = {
   id: string;
@@ -119,6 +120,7 @@ export default function Dashboard() {
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    
 
 	const handleCreateNew = () => {
 		const newPostId = uuidv4();
@@ -136,6 +138,26 @@ export default function Dashboard() {
 			console.error(err.message);
 		}
 	};
+
+    const flushChanges = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8787';
+            const res = await fetch(`${apiUrl}/api/trigger-rebuild`,  {
+                method: "POST",
+            });
+
+            if (res.status == 200 ){
+                var result = await res.json();
+                toast(result.message);
+            } else {
+                toast(result.message);
+            }
+        } catch (e) {
+            toast("Failed to do so");
+            // sentry log man
+        }
+
+    };
 
     const handleStatusToggle = async (postId: string, currentStatus: 'draft' | 'published') => {
 		const newStatus = currentStatus === 'draft' ? 'published' : 'draft';
@@ -222,6 +244,10 @@ export default function Dashboard() {
 					<TabsTrigger value="drafts">Drafts</TabsTrigger>
 				</TabsList>
 				<div className="ml-auto flex items-center gap-2">
+                     <Button size="sm" className="h-8 gap-1" onClick={flushChanges}>
+						<CloudUpload className="h-3.5 w-3.5" />
+						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Flush Changes</span>
+					</Button>
 					<Button size="sm" className="h-8 gap-1" onClick={handleCreateNew}>
 						<PlusCircle className="h-3.5 w-3.5" />
 						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Create New Story</span>
