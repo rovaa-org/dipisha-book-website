@@ -36,8 +36,12 @@ jobs:
       - name: Create .env file
         run: echo "NEXT_PUBLIC_API_URL=https://dipisha-website-worker-api.deepeshkalurs.workers.dev" > apps/frontend/.env
 
+      - name: Build The Frontend
+        run: pnpm --filter @dipisha/website build
+
       - name: Deploy to Cloudflare Production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm deploy:frontend
+        run: pnpm wrangler pages deploy out/
+        working-directory: apps/frontend
