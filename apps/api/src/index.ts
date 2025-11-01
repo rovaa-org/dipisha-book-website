@@ -114,8 +114,6 @@ const requireAuth = async (c: any, next: any) => {
 	}
 };
 
-app.use('/api/posts/*', requireAuth);
-app.use('/api/uploads', requireAuth);
 
 app.get('/api/posts', async (c) => {
 	const db = c.var.db;
@@ -144,6 +142,11 @@ app.get('/api/posts/:id', async (c) => {
 		return c.json({ error: 'Failed to fetch post' }, 500);
 	}
 });
+
+app.use('/api/posts/*', requireAuth);
+app.use('/api/uploads', requireAuth);
+
+
 
 app.put('/api/posts/:id', async (c) => {
 	const db = c.var.db;
