@@ -2,9 +2,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   transpilePackages: ['@dipisha/ui'],
   output: "export",
+  trailingSlash: true,
   images: {
     unoptimized: true,
     remotePatterns: [

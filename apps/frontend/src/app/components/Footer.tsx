@@ -111,6 +111,7 @@ const Footer = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   title={social.label}
+                  aria-label={`Follow on ${social.label}`}
                 >
                   {social.icon}
                 </motion.a>
