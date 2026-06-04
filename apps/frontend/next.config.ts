@@ -14,11 +14,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        canvas: "./empty-module.ts",
-      },
+  turbopack: {
+    resolveAlias: {
+      canvas: "./empty-module.ts",
     },
   },
 };
@@ -28,13 +26,12 @@ export default withSentryConfig(nextConfig, {
   project: "dipisha-book-website",
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  reactComponentAnnotation: {
-    enabled: true,
+  webpack: {
+    reactComponentAnnotation: {
+      enabled: true,
+    },
   },
-  tunnelRoute: "/monitoring",
   sourcemaps: {
     disable: false,
   },
-  disableLogger: true,
-  automaticVercelMonitors: true,
 });

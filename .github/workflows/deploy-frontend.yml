@@ -1,6 +1,14 @@
 name: "Deploy Frontend"
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/frontend/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
   workflow_dispatch:
     inputs:
       ref:
@@ -16,9 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: checking code structure 
-        run : ls apps/frontend
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -31,10 +36,12 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install 
+        run: pnpm install
 
       - name: Create .env file
-        run: echo "NEXT_PUBLIC_API_URL=https://dipisha-website-worker-api.deepeshkalurs.workers.dev" > apps/frontend/.env
+        run: |
+          echo "NEXT_PUBLIC_API_URL=https://dipisha-website-worker-api.deepeshkalurs.workers.dev" > apps/frontend/.env
+          echo "NEXT_PUBLIC_SITE_URL=https://dipishakalura.com" >> apps/frontend/.env
 
       - name: Build The Frontend
         run: pnpm --filter @dipisha/website build
