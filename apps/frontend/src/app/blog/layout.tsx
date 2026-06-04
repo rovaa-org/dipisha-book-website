@@ -1,6 +1,25 @@
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Metadata } from "next";
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dipishakalura.com";
+
+export const metadata: Metadata = {
+  title: "Blog | From My Journal",
+  description:
+    "Stories, poems, and thoughts from Dipisha Kalura's writing journey. Personal essays, poetry, and creative writing from an emerging voice in modern literature.",
+  alternates: {
+    canonical: `${baseUrl}/blog`,
+  },
+  openGraph: {
+    title: "Blog | From My Journal - Dipisha Kalura",
+    description:
+      "Stories, poems, and thoughts from Dipisha Kalura's writing journey.",
+    type: "website",
+    url: `${baseUrl}/blog`,
+  },
+};
 
 export default function BlogLayout({
   children,
